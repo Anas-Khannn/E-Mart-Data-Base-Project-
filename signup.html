@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Mart — Sign Up</title>
+  
+  <!-- Bootstrap 5.3.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Font Awesome 6.5.0 CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  
+  <!-- Google Fonts: Inter + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-primary    : #0d1117;
+      --bg-secondary  : #161b22;
+      --bg-card       : #1c2128;
+      --bg-input      : #0d1117;
+      --bg-hover      : #21262d;
+      --green         : #238636;
+      --green-light   : #3fb950;
+      --green-bright  : #56d364;
+      --blue          : #58a6ff;
+      --blue-dark     : #1f6feb;
+      --purple        : #8957e5;
+      --amber         : #e3b341;
+      --red           : #f85149;
+      --text-primary  : #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted    : #484f58;
+      --border        : #30363d;
+      --border-green  : rgba(35, 134, 54, 0.4);
+      --gradient-btn  : linear-gradient(135deg, #238636, #196c2e);
+      --glow-green    : 0 0 20px rgba(35, 134, 54, 0.4);
+    }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #161b22;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #238636;
+      border-radius: 3px;
+    }
+
+    /* Split Layout */
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .brand-panel {
+      flex: 1;
+      background: #0d1117;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3rem;
+      border-right: 1px solid var(--border);
+    }
+
+    .right-panel {
+      flex: 1.2;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      perspective: 1000px;
+    }
+
+    /* Dot Grid Drift Animation */
+    .brand-panel::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      right: -50%;
+      bottom: -50%;
+      background-image: radial-gradient(circle, #30363d 1.2px, transparent 1.2px);
+      background-size: 32px 32px;
+      z-index: 1;
+      pointer-events: none;
+      animation: driftGrid 12s linear infinite;
+    }
+
+    @keyframes driftGrid {
+      from { transform: translate(0, 0); }
+      to { transform: translate(32px, 32px); }
+    }
+
+    /* Particles */
+    .particles-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.6;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateY(-24px) scale(1.25); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 0.6; }
+    }
+
+    /* 3D Store Icon */
+    .logo-3d-wrapper {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 180px;
+      z-index: 3;
+      transform-style: preserve-3d;
+      margin-top: 1rem;
+    }
+
+    .logo-3d {
+      font-size: 80px;
+      color: var(--green-light);
+      filter: drop-shadow(0 0 25px rgba(63, 185, 80, 0.65));
+      animation: spin3d 10s linear infinite;
+      transform-style: preserve-3d;
+    }
+
+    @keyframes spin3d {
+      0%   { transform: perspective(600px) rotateY(0deg) rotateX(8deg); }
+      50%  { transform: perspective(600px) rotateY(180deg) rotateX(-8deg); }
+      100% { transform: perspective(600px) rotateY(360deg) rotateX(8deg); }
+    }
+
+    /* Brand Typography */
+    .brand-content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .brand-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 36px;
+      color: var(--text-primary);
+      text-shadow: 0 0 24px rgba(63, 185, 80, 0.4);
+      margin-bottom: 0.25rem;
+    }
+
+    .brand-title i {
+      color: var(--green-light);
+      margin-right: 10px;
+    }
+
+    .brand-tagline {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+    }
+
+    /* Pills */
+    .feature-pills {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 1rem auto;
+      max-width: 440px;
+    }
+
+    .feature-pill {
+      display: inline-block;
+      background: rgba(35, 134, 54, 0.12);
+      border: 1px solid rgba(63, 185, 80, 0.3);
+      border-radius: 50px;
+      padding: 8px 18px;
+      color: var(--green-light);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Bottom Stats Cards */
+    .stats-row {
+      position: relative;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    .stat-card {
+      background: rgba(22, 27, 34, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 10px;
+      text-align: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .stat-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--green-light);
+      margin-bottom: 2px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-footer {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 1.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    /* Right Auth Card */
+    .auth-card {
+      background: rgba(22, 27, 34, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      padding: 2.25rem;
+      width: 100%;
+      max-width: 580px; /* Slightly wider for the two-column form inputs */
+      z-index: 5;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .auth-heading {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 26px;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-subheading {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Floating Inputs & Custom Grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .floating-group {
+      position: relative;
+    }
+
+    .floating-group.full-width {
+      grid-column: span 2;
+    }
+
+    .floating-input, .floating-select {
+      width: 100%;
+      padding: 13px 44px 13px 16px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    /* Custom select element override */
+    .floating-select {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      cursor: pointer;
+    }
+
+    .floating-input:focus, .floating-select:focus {
+      border-color: var(--green);
+      box-shadow: var(--glow-green);
+      outline: none;
+    }
+
+    .floating-label {
+      position: absolute;
+      left: 16px;
+      top: 13px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      pointer-events: none;
+      transition: 0.2s all ease-in-out;
+    }
+
+    /* Floating Label On Focus/Active value */
+    .floating-input:focus ~ .floating-label,
+    .floating-input:not(:placeholder-shown) ~ .floating-label,
+    .floating-select:focus ~ .floating-label,
+    .floating-select:not([value=""]):valid ~ .floating-label {
+      top: -9px;
+      font-size: 11px;
+      color: var(--green-light);
+      background: var(--bg-primary);
+      padding: 0 5px;
+      letter-spacing: 0.5px;
+    }
+
+    /* If value already selected/pre-filled in select */
+    .floating-select.has-value ~ .floating-label {
+      top: -9px;
+      font-size: 11px;
+      color: var(--green-light);
+      background: var(--bg-primary);
+      padding: 0 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .floating-icon {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .floating-input:focus ~ .floating-icon, .floating-select:focus ~ .floating-icon {
+      color: var(--green);
+    }
+
+    .floating-input.is-invalid, .floating-select.is-invalid {
+      border-color: var(--red) !important;
+      box-shadow: 0 0 10px rgba(248, 81, 73, 0.2) !important;
+    }
+    
+    .floating-input.is-invalid ~ .floating-label, .floating-select.is-invalid ~ .floating-label {
+      color: var(--red) !important;
+    }
+
+    .floating-input.is-invalid ~ .floating-icon, .floating-select.is-invalid ~ .floating-icon {
+      color: var(--red) !important;
+    }
+
+    .error-feedback {
+      color: var(--red);
+      font-size: 11px;
+      margin-top: 3px;
+      display: none;
+    }
+
+    /* Password Strength Meter */
+    .strength-wrapper {
+      margin-top: 6px;
+      margin-bottom: 15px;
+    }
+
+    .strength-bar-container {
+      display: flex;
+      gap: 4px;
+      height: 4px;
+      margin-bottom: 4px;
+    }
+
+    .strength-bar {
+      flex: 1;
+      height: 100%;
+      background: #30363d;
+      border-radius: 2px;
+      transition: background 0.3s ease;
+    }
+
+    .strength-text-row {
+      display: flex;
+      justify-content: flex-end;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    /* Terms Custom Checkbox */
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 0.5rem;
+      user-select: none;
+    }
+
+    .custom-checkbox {
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg-input);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    .custom-checkbox i {
+      color: #fff;
+      font-size: 10px;
+      display: none;
+    }
+
+    .custom-checkbox.checked {
+      background: var(--green);
+      border-color: var(--green);
+      box-shadow: 0 0 8px rgba(35, 134, 54, 0.4);
+    }
+
+    .custom-checkbox.checked i {
+      display: block;
+    }
+
+    .checkbox-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .checkbox-label a {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .checkbox-label a:hover {
+      color: var(--green-light);
+      text-decoration: underline;
+    }
+
+    /* Buttons */
+    .btn-submit {
+      width: 100%;
+      height: 46px;
+      background: var(--gradient-btn);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      box-shadow: var(--glow-green);
+      margin-top: 1.5rem;
+    }
+
+    .btn-submit:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .shake-anim {
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    /* Modal Styling Overrides (Emerald Dark Mode) */
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-primary);
+    }
+
+    .modal-header {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--red);
+    }
+
+    .modal-body {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    .modal-footer {
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-modal-close {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      padding: 8px 18px;
+      font-size: 13px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .btn-modal-close:hover {
+      background: var(--bg-hover);
+      border-color: var(--blue);
+    }
+
+    /* SUCCESS ANIMATED STATE */
+    .success-container {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2.5rem 0;
+      animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    @keyframes scaleIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .checkmark-wrapper {
+      width: 80px;
+      height: 80px;
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .checkmark-svg {
+      width: 80px;
+      height: 80px;
+      display: block;
+    }
+
+    .checkmark-circle {
+      stroke: var(--green-bright);
+      stroke-width: 4;
+      stroke-miterlimit: 10;
+      fill: none;
+      stroke-dasharray: 260;
+      stroke-dashoffset: 260;
+      animation: drawCircle 0.8s ease-out forwards;
+    }
+
+    .checkmark-tick {
+      stroke: var(--green-bright);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      stroke-dasharray: 80;
+      stroke-dashoffset: 80;
+      animation: drawTick 0.5s ease-out 0.6s forwards;
+    }
+
+    @keyframes drawCircle {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes drawTick {
+      to { stroke-dashoffset: 0; }
+    }
+
+    .success-title {
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .success-subtitle {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    .success-loader {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--green-light);
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .auth-container {
+        flex-direction: column;
+      }
+      .brand-panel {
+        padding: 2rem;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .right-panel {
+        padding: 2rem 1.25rem;
+      }
+      .logo-3d-wrapper {
+        height: 130px;
+      }
+      .logo-3d {
+        font-size: 55px;
+      }
+      .brand-title {
+        font-size: 28px;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .floating-group.full-width {
+        grid-column: span 1;
+      }
+      .stats-row {
+        margin-top: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    
+    <!-- LEFT BRAND PANEL -->
+    <div class="brand-panel">
+      <!-- Animated Floating Particles -->
+      <div class="particles-container" id="particles"></div>
+      
+      <!-- Top Section Info / Project Marker -->
+      <div class="d-flex justify-content-between align-items-center w-100 position-relative" style="z-index:3;">
+        <span class="text-uppercase font-monospace text-secondary fs-6" style="letter-spacing:1px;">DBMS Semester Project</span>
+        <span class="badge bg-secondary border border-secondary text-primary font-monospace px-2 py-1">v1.0-Static</span>
+      </div>
+
+      <!-- 3D Rotating Logo Icon -->
+      <div class="logo-3d-wrapper">
+        <div class="logo-3d">
+          <i class="fa-solid fa-store"></i>
+        </div>
+      </div>
+
+      <!-- Typography -->
+      <div class="brand-content">
+        <h1 class="brand-title">
+          <i class="fa-solid fa-cart-shopping"></i>E-Mart
+        </h1>
+        <p class="brand-tagline">Smart Shopping. Smarter Management.</p>
+      </div>
+
+      <!-- Staggered feature pills -->
+      <div class="feature-pills">
+        <a href="#" class="feature-pill" style="animation-delay: 0.1s;"><i class="fa-solid fa-box-open me-1"></i> Inventory Control</a>
+        <a href="#" class="feature-pill" style="animation-delay: 0.3s;"><i class="fa-solid fa-cash-register me-1"></i> POS & Sales</a>
+        <a href="#" class="feature-pill" style="animation-delay: 0.5s;"><i class="fa-solid fa-chart-line me-1"></i> Live Analytics</a>
+        <a href="#" class="feature-pill" style="animation-delay: 0.7s;"><i class="fa-solid fa-users me-1"></i> Customer CRM</a>
+      </div>
+
+      <!-- Stats row -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-number">1,200+</div>
+          <div class="stat-label">Products</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">50K+</div>
+          <div class="stat-label">Sales</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">99.9%</div>
+          <div class="stat-label">Uptime</div>
+        </div>
+      </div>
+
+      <!-- DBMS Footer text -->
+      <div class="brand-footer">
+        University DBMS Semester Project &copy; 2026
+      </div>
+    </div>
+
+    <!-- RIGHT FORM PANEL -->
+    <div class="right-panel">
+      
+      <!-- Auth Form Card -->
+      <div class="auth-card" id="authCard">
+        
+        <!-- Standard Registration State -->
+        <div id="signUpState">
+          <div class="auth-header">
+            <h2 class="auth-heading">Create account 🚀</h2>
+            <p class="auth-subheading">Join E-Mart Management System</p>
+          </div>
+
+          <form id="signupForm" novalidate>
+            <div class="form-grid">
+              
+              <!-- Full Name Field -->
+              <div class="floating-group">
+                <input type="text" class="floating-input" id="fullname" placeholder=" " required>
+                <label for="fullname" class="floating-label">Full Name</label>
+                <i class="fa-solid fa-user floating-icon"></i>
+                <div class="error-feedback" id="fullnameError">Full Name is required</div>
+              </div>
+
+              <!-- Username Field -->
+              <div class="floating-group">
+                <input type="text" class="floating-input" id="username" placeholder=" " required>
+                <label for="username" class="floating-label">Username</label>
+                <i class="fa-solid fa-at floating-icon"></i>
+                <div class="error-feedback" id="usernameError">Username is required</div>
+              </div>
+
+              <!-- Email Field -->
+              <div class="floating-group">
+                <input type="email" class="floating-input" id="email" placeholder=" " required>
+                <label for="email" class="floating-label">Email Address</label>
+                <i class="fa-solid fa-envelope floating-icon"></i>
+                <div class="error-feedback" id="emailError">Please enter a valid email</div>
+              </div>
+
+              <!-- Phone Field -->
+              <div class="floating-group">
+                <input type="text" class="floating-input" id="phone" placeholder=" " required>
+                <label for="phone" class="floating-label">Phone Number</label>
+                <i class="fa-solid fa-phone floating-icon"></i>
+                <div class="error-feedback" id="phoneError">Format: 03XX-XXXXXXX</div>
+              </div>
+
+              <!-- Role Field (Select) -->
+              <div class="floating-group">
+                <select class="floating-select" id="role" required>
+                  <option value="" disabled selected hidden></option>
+                  <option value="Admin">Admin</option>
+                  <option value="Manager">Manager</option>
+                  <option value="Cashier">Cashier</option>
+                  <option value="Staff">Staff</option>
+                </select>
+                <label for="role" class="floating-label">Select System Role</label>
+                <i class="fa-solid fa-shield-halved floating-icon" style="pointer-events:none;"></i>
+                <div class="error-feedback" id="roleError">System Role is required</div>
+              </div>
+
+              <!-- Branch Field (Select) -->
+              <div class="floating-group">
+                <select class="floating-select" id="branch" required>
+                  <option value="" disabled selected hidden></option>
+                  <option value="Main Branch">Main Branch</option>
+                  <option value="Lahore Branch">Lahore Branch</option>
+                  <option value="Peshawar Branch">Peshawar Branch</option>
+                  <option value="Karachi Branch">Karachi Branch</option>
+                </select>
+                <label for="branch" class="floating-label">Select Branch</label>
+                <i class="fa-solid fa-building floating-icon" style="pointer-events:none;"></i>
+                <div class="error-feedback" id="branchError">Branch selection is required</div>
+              </div>
+
+              <!-- Password Field -->
+              <div class="floating-group full-width">
+                <input type="password" class="floating-input" id="password" placeholder=" " required>
+                <label for="password" class="floating-label">Password</label>
+                <i class="fa-solid fa-lock floating-icon" id="togglePassword"></i>
+                <div class="error-feedback" id="passwordError">Password is required</div>
+                
+                <!-- Password Strength Meter -->
+                <div class="strength-wrapper">
+                  <div class="strength-bar-container">
+                    <div class="strength-bar" id="bar1"></div>
+                    <div class="strength-bar" id="bar2"></div>
+                    <div class="strength-bar" id="bar3"></div>
+                    <div class="strength-bar" id="bar4"></div>
+                  </div>
+                  <div class="strength-text-row">
+                    <span id="strengthText">Too Short</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Confirm Password Field -->
+              <div class="floating-group full-width">
+                <input type="password" class="floating-input" id="confirmPassword" placeholder=" " required>
+                <label for="confirmPassword" class="floating-label">Confirm Password</label>
+                <i class="fa-solid fa-lock floating-icon" id="toggleConfirmPassword"></i>
+                <div class="error-feedback" id="confirmPasswordError">Passwords must match</div>
+              </div>
+
+            </div>
+
+            <!-- Terms & Conditions Checkbox -->
+            <div class="checkbox-container">
+              <div class="custom-checkbox" id="termsCheckbox">
+                <i class="fa-solid fa-check"></i>
+              </div>
+              <span class="checkbox-label" id="termsLabel">
+                I agree to the <a href="#" id="openTermsLink">Terms & Conditions</a>
+              </span>
+            </div>
+            <div class="error-feedback text-start" id="termsError" style="margin-top:4px;">You must accept the Terms & Conditions</div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-submit" id="btnSubmit">
+              <span>Create Account</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </form>
+
+          <!-- Bottom Link -->
+          <div class="auth-bottom">
+            Already have an account? 
+            <a href="login.html" class="auth-bottom-link">Sign in →</a>
+          </div>
+        </div>
+
+        <!-- Animated Success Screen State -->
+        <div class="success-container" id="successState">
+          <div class="checkmark-wrapper">
+            <svg class="checkmark-svg" viewBox="0 0 80 80">
+              <circle class="checkmark-circle" cx="40" cy="40" r="36" />
+              <path class="checkmark-tick" d="M23 41.5 L34 52.5 L57 26.5" />
+            </svg>
+          </div>
+          <h3 class="success-title">Account Created!</h3>
+          <p class="success-subtitle">Welcome aboard. Your registration for E-Mart is complete.</p>
+          <div class="success-loader">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <span>Redirecting to login dashboard...</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Terms & Conditions Bootstrap Modal -->
+  <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true" style="backdrop-filter: blur(8px);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fa-solid fa-scale-balanced me-2 text-success"></i>Terms & Conditions</h5>
+          <button type="button" class="modal-close-btn" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+          <p class="fw-bold text-white mb-2">1. DBMS System Access and Integrity</p>
+          <p class="mb-3">This system is authorized strictly for E-Mart employees. Any attempt to modify hardcoded indices, execute unauthorized scripts, or manipulate pricing data grids in any terminal/console viewport constitutes a breach of the university dbms protocol guidelines.</p>
+          
+          <p class="fw-bold text-white mb-2">2. POS and Stock Verification Protocol</p>
+          <p class="mb-3">All cashiers, manager associates, and checkout agents are required to thoroughly audit item counts. The hardcoded product dataset matches real inventory registers, and any discrepancies should be logged on the dashboard control feed.</p>
+          
+          <p class="fw-bold text-white mb-2">3. Role and Access Control Restrictions</p>
+          <p class="mb-3">System privileges (Admin, Manager, Cashier, Staff) strictly regulate POS checkout, invoice printing, inventory updates, and visual chart reporting. Staff are forbidden from sharing login keys or operational credentials.</p>
+
+          <p class="fw-bold text-white mb-2">4. Static Data Simulation</p>
+          <p class="mb-0">Please note: As a static university DBMS submission layout, all database structures, customer entries, transactions, and analytics dashboards represent simulated client data blocks.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-modal-close" data-bs-dismiss="modal">I Understand</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Generate Floating Particles
+      const particlesContainer = document.getElementById("particles");
+      const colors = ["rgba(35, 134, 54, 0.7)", "rgba(88, 166, 255, 0.5)"];
+      const particleCount = 20;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement("div");
+        const size = Math.floor(Math.random() * 4) + 3;
+        const left = Math.floor(Math.random() * 95) + 2;
+        const top = Math.floor(Math.random() * 90) + 5;
+        const delay = Math.random() * 5;
+        const duration = Math.random() * 4 + 3;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        particle.classList.add("particle");
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${left}%`;
+        particle.style.top = `${top}%`;
+        particle.style.backgroundColor = color;
+        particle.style.animation = `floatUp ${duration}s ease-in-out ${delay}s infinite`;
+
+        if (Math.random() > 0.5) {
+          particle.style.boxShadow = `0 0 10px ${color}`;
+        }
+
+        particlesContainer.appendChild(particle);
+      }
+
+      // 2. 3D Mouse Tilt Script
+      const card = document.getElementById("authCard");
+      const panel = document.querySelector(".right-panel");
+
+      if (window.innerWidth > 768) {
+        panel.addEventListener("mousemove", (e) => {
+          const r = card.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          
+          const rx = ((e.clientY - cy) / (r.height / 2)) * -5;
+          const ry = ((e.clientX - cx) / (r.width / 2)) * 5;
+
+          card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+          card.style.transition = 'transform 0.1s ease';
+        });
+
+        panel.addEventListener("mouseleave", () => {
+          card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
+          card.style.transition = 'transform 0.5s ease';
+        });
+      }
+
+      // 3. Custom CSS Select triggers floating labels
+      const selects = document.querySelectorAll(".floating-select");
+      selects.forEach(select => {
+        select.addEventListener("change", () => {
+          if (select.value) {
+            select.classList.add("has-value");
+          } else {
+            select.classList.remove("has-value");
+          }
+        });
+      });
+
+      // 4. Custom Styled Checkbox Toggle
+      const termsCheckbox = document.getElementById("termsCheckbox");
+      const termsLabel = document.getElementById("termsLabel");
+      let isChecked = false;
+
+      const toggleCheckbox = () => {
+        isChecked = !isChecked;
+        if (isChecked) {
+          termsCheckbox.classList.add("checked");
+        } else {
+          termsCheckbox.classList.remove("checked");
+        }
+      };
+      
+      termsCheckbox.addEventListener("click", toggleCheckbox);
+      termsLabel.addEventListener("click", (e) => {
+        if (e.target.tagName !== "A") {
+          toggleCheckbox();
+        }
+      });
+
+      // Open Modal trigger
+      const openTermsLink = document.getElementById("openTermsLink");
+      const modalInstance = new bootstrap.Modal(document.getElementById("termsModal"));
+      
+      openTermsLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        modalInstance.show();
+      });
+
+      // 5. Password Strengths Meter logic
+      const passwordInput = document.getElementById("password");
+      const strengthText = document.getElementById("strengthText");
+      const bars = [
+        document.getElementById("bar1"),
+        document.getElementById("bar2"),
+        document.getElementById("bar3"),
+        document.getElementById("bar4")
+      ];
+
+      const checkPasswordStrength = (pwd) => {
+        let score = 0;
+        if (!pwd || pwd.length < 6) return 0;
+        
+        // At least 6 chars
+        score = 1;
+
+        // Has number
+        if (/\d/.test(pwd)) score = 2;
+
+        // Has uppercase + number
+        if (/[A-Z]/.test(pwd) && /\d/.test(pwd)) score = 3;
+
+        // Has special char + length > 10
+        if (/[!@#$%^&*(),.?":{}|<>]/.test(pwd) && pwd.length > 10) score = 4;
+
+        return score;
+      };
+
+      passwordInput.addEventListener("keyup", () => {
+        const pwd = passwordInput.value;
+        const score = checkPasswordStrength(pwd);
+
+        // Reset bars
+        bars.forEach(bar => {
+          bar.style.backgroundColor = "#30363d";
+        });
+
+        if (pwd.length === 0) {
+          strengthText.textContent = "Too Short";
+          strengthText.style.color = "var(--text-secondary)";
+          return;
+        }
+
+        if (score === 1) {
+          bars[0].style.backgroundColor = "var(--red)";
+          strengthText.textContent = "Weak";
+          strengthText.style.color = "var(--red)";
+        } else if (score === 2) {
+          bars[0].style.backgroundColor = "var(--amber)";
+          bars[1].style.backgroundColor = "var(--amber)";
+          strengthText.textContent = "Fair";
+          strengthText.style.color = "var(--amber)";
+        } else if (score === 3) {
+          bars[0].style.backgroundColor = "var(--blue)";
+          bars[1].style.backgroundColor = "var(--blue)";
+          bars[2].style.backgroundColor = "var(--blue)";
+          strengthText.textContent = "Good";
+          strengthText.style.color = "var(--blue)";
+        } else if (score === 4) {
+          bars[0].style.backgroundColor = "var(--green-bright)";
+          bars[1].style.backgroundColor = "var(--green-bright)";
+          bars[2].style.backgroundColor = "var(--green-bright)";
+          bars[3].style.backgroundColor = "var(--green-bright)";
+          strengthText.textContent = "Strong";
+          strengthText.style.color = "var(--green-bright)";
+        }
+      });
+
+      // Password Toggles
+      const togglePassword = document.getElementById("togglePassword");
+      const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
+      const confirmPasswordInput = document.getElementById("confirmPassword");
+
+      togglePassword.addEventListener("click", () => {
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          togglePassword.className = "fa-solid fa-eye-slash floating-icon";
+        } else {
+          passwordInput.type = "password";
+          togglePassword.className = "fa-solid fa-lock floating-icon";
+        }
+      });
+
+      toggleConfirmPassword.addEventListener("click", () => {
+        if (confirmPasswordInput.type === "password") {
+          confirmPasswordInput.type = "text";
+          toggleConfirmPassword.className = "fa-solid fa-eye-slash floating-icon";
+        } else {
+          confirmPasswordInput.type = "password";
+          toggleConfirmPassword.className = "fa-solid fa-lock floating-icon";
+        }
+      });
+
+      // Phone Input Mask Format verification helper (03XX-XXXXXXX)
+      const phoneInput = document.getElementById("phone");
+      phoneInput.addEventListener("input", (e) => {
+        let val = phoneInput.value.replace(/\D/g, ""); // strip non-digits
+        if (val.length > 11) val = val.substring(0, 11);
+        
+        if (val.length > 4) {
+          phoneInput.value = val.substring(0, 4) + "-" + val.substring(4);
+        } else {
+          phoneInput.value = val;
+        }
+      });
+
+      // 6. Validation and success flow
+      const signupForm = document.getElementById("signupForm");
+      const fields = ["fullname", "username", "email", "phone", "role", "branch", "password", "confirmPassword"];
+
+      signupForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        let isFormValid = true;
+
+        // Reset validation errors
+        fields.forEach(fieldId => {
+          const input = document.getElementById(fieldId);
+          const err = document.getElementById(`${fieldId}Error`);
+          input.classList.remove("is-invalid", "shake-anim");
+          if (err) err.style.display = "none";
+        });
+        
+        document.getElementById("termsError").style.display = "none";
+
+        // Full name
+        const fullname = document.getElementById("fullname");
+        if (!fullname.value.trim()) {
+          fullname.classList.add("is-invalid", "shake-anim");
+          document.getElementById("fullnameError").style.display = "block";
+          isFormValid = false;
+        }
+
+        // Username
+        const username = document.getElementById("username");
+        if (!username.value.trim()) {
+          username.classList.add("is-invalid", "shake-anim");
+          document.getElementById("usernameError").style.display = "block";
+          isFormValid = false;
+        }
+
+        // Email
+        const email = document.getElementById("email");
+        const emailReg = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.value.trim() || !emailReg.test(email.value.trim())) {
+          email.classList.add("is-invalid", "shake-anim");
+          document.getElementById("emailError").style.display = "block";
+          isFormValid = false;
+        }
+
+        // Phone (03XX-XXXXXXX)
+        const phone = document.getElementById("phone");
+        const phoneReg = /^03\d{2}-\d{7}$/;
+        if (!phoneReg.test(phone.value)) {
+          phone.classList.add("is-invalid", "shake-anim");
+          document.getElementById("phoneError").style.display = "block";
+          isFormValid = false;
+        }
+
+        // Role
+        const role = document.getElementById("role");
+        if (!role.value) {
+          role.classList.add("is-invalid", "shake-anim");
+          document.getElementById("roleError").style.display = "block";
+          isFormValid = false;
+        }
+
+        // Branch
+        const branch = document.getElementById("branch");
+        if (!branch.value) {
+          branch.classList.add("is-invalid", "shake-anim");
+          document.getElementById("branchError").style.display = "block";
+          isFormValid = false;
+        }
+
+        // Password strength score
+        const pwd = passwordInput.value;
+        const score = checkPasswordStrength(pwd);
+        if (score === 0) {
+          passwordInput.classList.add("is-invalid", "shake-anim");
+          document.getElementById("passwordError").textContent = "Password must be at least 6 characters";
+          document.getElementById("passwordError").style.display = "block";
+          isFormValid = false;
+        }
+
+        // Password matching
+        const confirmPassword = document.getElementById("confirmPassword");
+        if (confirmPassword.value !== pwd || !confirmPassword.value) {
+          confirmPassword.classList.add("is-invalid", "shake-anim");
+          document.getElementById("confirmPasswordError").style.display = "block";
+          isFormValid = false;
+        }
+
+        // Terms checked
+        if (!isChecked) {
+          document.getElementById("termsError").style.display = "block";
+          isFormValid = false;
+        }
+
+        // Remove shakes
+        setTimeout(() => {
+          fields.forEach(fieldId => {
+            document.getElementById(fieldId).classList.remove("shake-anim");
+          });
+        }, 400);
+
+        if (isFormValid) {
+          // Hide Form panel, Show success state
+          const signUpState = document.getElementById("signUpState");
+          const successState = document.getElementById("successState");
+
+          signUpState.style.display = "none";
+          successState.style.display = "flex";
+
+          // Simulate automatic redirect
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 2000);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

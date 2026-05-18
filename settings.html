@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Mart — Store Settings</title>
+  
+  <!-- Bootstrap 5.3.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Font Awesome 6.5.0 CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  
+  <!-- Google Fonts: Inter + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary    : #0d1117;
+      --bg-secondary  : #161b22;
+      --bg-card       : #1c2128;
+      --bg-input      : #0d1117;
+      --bg-hover      : #21262d;
+      --green         : #238636;
+      --green-light   : #3fb950;
+      --green-bright  : #56d364;
+      --blue          : #58a6ff;
+      --blue-dark     : #1f6feb;
+      --purple        : #8957e5;
+      --amber         : #e3b341;
+      --red           : #f85149;
+      --text-primary  : #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted    : #484f58;
+      --border        : #30363d;
+      --border-green  : rgba(35, 134, 54, 0.4);
+      --gradient-btn  : linear-gradient(135deg, #238636, #196c2e);
+      --gradient-blue : linear-gradient(135deg, #1f6feb, #0d4a9e);
+      --glow-green    : 0 0 20px rgba(35, 134, 54, 0.4);
+      --glow-blue     : 0 0 16px rgba(88, 166, 255, 0.3);
+    }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #161b22;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #238636;
+      border-radius: 3px;
+    }
+
+    /* Layout Wrapper */
+    .dashboard-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Left Sidebar */
+    .sidebar {
+      width: 250px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-brand {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .sidebar-brand i {
+      font-size: 24px;
+      color: var(--green-light);
+    }
+
+    .sidebar-brand span {
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-menu {
+      padding: 1.5rem 0;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      overflow-y: auto;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 1.5rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .menu-item:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .menu-item.active {
+      background: rgba(35, 134, 54, 0.08);
+      color: var(--text-primary);
+      border-left-color: var(--green-light);
+      font-weight: 600;
+    }
+
+    .menu-item i {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--red);
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+
+    .btn-logout:hover {
+      opacity: 0.8;
+      text-decoration: underline;
+    }
+
+    /* Main Content Area */
+    .content-area {
+      margin-left: 250px;
+      flex-grow: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navbar */
+    .navbar {
+      height: 70px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 18px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .breadcrumbs {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .breadcrumbs a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .breadcrumbs span.current {
+      color: var(--green-light);
+      font-weight: 500;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 10px;
+      border-radius: 8px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gradient-blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      border: 1px solid var(--blue);
+    }
+
+    /* Main Container Content */
+    .dashboard-content {
+      padding: 2rem;
+      flex-grow: 1;
+    }
+
+    .page-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    /* Cards */
+    .card-emart {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 24px;
+    }
+
+    /* Tabs Styling Custom */
+    .settings-tabs {
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 5px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    .settings-tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--text-secondary);
+      padding: 10px 16px;
+      font-weight: 600;
+      font-size: 13.5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .settings-tab-btn:hover {
+      color: var(--text-primary);
+      border-bottom-color: var(--border);
+    }
+
+    .settings-tab-btn.active {
+      color: var(--green-light);
+      border-bottom-color: var(--green-light);
+    }
+
+    .settings-sheet {
+      display: none;
+    }
+
+    .settings-sheet.active {
+      display: block;
+    }
+
+    /* Floating Labels Form */
+    .floating-group {
+      position: relative;
+      margin-bottom: 1.25rem;
+    }
+
+    .floating-input, .floating-textarea {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 13.5px;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .floating-textarea {
+      height: 90px;
+      resize: none;
+    }
+
+    .floating-input:focus, .floating-textarea:focus {
+      border-color: var(--green);
+      box-shadow: var(--glow-green);
+      outline: none;
+    }
+
+    .floating-label {
+      position: absolute;
+      left: 14px;
+      top: 12px;
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      pointer-events: none;
+      transition: 0.2s all ease-in-out;
+    }
+
+    .floating-input:focus ~ .floating-label,
+    .floating-input:not(:placeholder-shown) ~ .floating-label,
+    .floating-textarea:focus ~ .floating-label,
+    .floating-textarea:not(:placeholder-shown) ~ .floating-label {
+      top: -9px;
+      font-size: 11px;
+      color: var(--green-light);
+      background: var(--bg-card);
+      padding: 0 5px;
+      letter-spacing: 0.5px;
+    }
+
+    /* Buttons */
+    .btn-emart-primary {
+      background: var(--gradient-btn);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 13.5px;
+      padding: 10px 22px;
+      cursor: pointer;
+      box-shadow: var(--glow-green);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-emart-primary:hover {
+      opacity: 0.9;
+    }
+
+    /* Toggles custom layout */
+    .setting-toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(22, 27, 34, 0.4);
+      margin-bottom: 12px;
+    }
+
+    .toggle-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .toggle-title {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .toggle-desc {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+    }
+
+    /* Switch styling custom */
+    .form-switch-emart {
+      width: 44px;
+      height: 24px;
+      background: var(--border);
+      border-radius: 15px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .form-switch-emart.active {
+      background: var(--green);
+      box-shadow: var(--glow-green);
+    }
+
+    .form-switch-nob {
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: left 0.2s;
+    }
+
+    .form-switch-emart.active .form-switch-nob {
+      left: 23px;
+    }
+
+    /* Users table settings */
+    .settings-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .settings-table th {
+      background: var(--bg-secondary);
+      border-bottom: 2px solid var(--border);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 10px;
+      text-align: left;
+    }
+
+    .settings-table td {
+      border-bottom: 1px solid var(--border);
+      padding: 10px;
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+
+    .settings-table tbody tr:hover td {
+      background: var(--bg-hover);
+    }
+
+    /* Badges */
+    .badge-emart {
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .badge-green  { background: rgba(86,211,100,0.15); color: #56d364; border: 1px solid rgba(86,211,100,0.3); }
+    .badge-blue   { background: rgba(88,166,255,0.12); color: #58a6ff; border: 1px solid rgba(88,166,255,0.3); }
+    .badge-purple { background: rgba(137,87,229,0.15); color: #8957e5; border: 1px solid rgba(137,87,229,0.3); }
+
+    /* Backup Progress */
+    .backup-status-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      background: rgba(22, 27, 34, 0.4);
+      margin-top: 15px;
+      display: none;
+    }
+
+    .progress-bar-container {
+      height: 8px;
+      background: var(--bg-primary);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 12px 0;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--green-bright);
+      box-shadow: var(--glow-green);
+      transition: width 0.1s linear;
+    }
+
+    .progress-percent {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--green-light);
+    }
+
+    /* Toast styled */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    .toast-emart {
+      background: var(--bg-card);
+      border: 1px solid var(--green);
+      border-radius: 8px;
+      padding: 12px 18px;
+      color: var(--text-primary);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .toast-emart.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-emart i {
+      color: var(--green-bright);
+      font-size: 16px;
+    }
+
+    /* Action buttons inside table */
+    .btn-action-suspend {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--red);
+      padding: 4px 8px;
+      font-size: 11px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .btn-action-suspend:hover {
+      background: rgba(248, 81, 73, 0.1);
+      border-color: var(--red);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .sidebar {
+        left: -250px;
+      }
+      .sidebar.active {
+        left: 0;
+      }
+      .content-area {
+        margin-left: 0;
+      }
+      .sidebar-toggle {
+        display: block;
+      }
+      .dashboard-content {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+    
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <a href="dashboard.html" class="sidebar-brand">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span>E-Mart</span>
+      </a>
+      
+      <div class="sidebar-menu">
+        <a href="dashboard.html" class="menu-item">
+          <i class="fa-solid fa-gauge-high"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="pos.html" class="menu-item">
+          <i class="fa-solid fa-cash-register"></i>
+          <span>POS Checkout</span>
+        </a>
+        <a href="products.html" class="menu-item">
+          <i class="fa-solid fa-boxes-stacked"></i>
+          <span>Products Inventory</span>
+        </a>
+        <a href="customers.html" class="menu-item">
+          <i class="fa-solid fa-users"></i>
+          <span>Customers (CRM)</span>
+        </a>
+        <a href="reports.html" class="menu-item">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Visual Reports</span>
+        </a>
+        <a href="settings.html" class="menu-item active">
+          <i class="fa-solid fa-gears"></i>
+          <span>Store Settings</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="login.html" class="btn-logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Log Out</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="content-area">
+      
+      <!-- TOP NAVBAR -->
+      <div class="navbar">
+        <div class="nav-left">
+          <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="breadcrumbs">
+            <a href="#">E-Mart</a> &nbsp;/&nbsp; <a href="#">Control Center</a> &nbsp;/&nbsp; <span class="current">Store Settings</span>
+          </div>
+        </div>
+
+        <div class="nav-right">
+          <div class="user-profile">
+            <div class="user-avatar">AK</div>
+            <div class="user-info d-none d-sm-flex">
+              <span class="user-name">Anas Khan</span>
+              <span class="user-role">Administrator</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTAINER CONTENT -->
+      <div class="dashboard-content">
+        
+        <!-- HEADER ROW -->
+        <div class="page-header-row">
+          <h2 class="page-title"><i class="fa-solid fa-gears text-success me-2"></i>Store Systems Settings</h2>
+        </div>
+
+        <!-- MAIN TABBED PANEL CARD -->
+        <div class="card-emart">
+          
+          <!-- TAB BUTTONS -->
+          <div class="settings-tabs">
+            <button class="settings-tab-btn active" data-tab="general"><i class="fa-solid fa-circle-info me-1"></i> General Details</button>
+            <button class="settings-tab-btn" data-tab="users"><i class="fa-solid fa-user-gear me-1"></i> Users & Roster</button>
+            <button class="settings-tab-btn" data-tab="billing"><i class="fa-solid fa-sliders me-1"></i> Billing & Toggles</button>
+            <button class="settings-tab-btn" data-tab="security"><i class="fa-solid fa-database me-1"></i> Backup & Security</button>
+          </div>
+
+          <!-- TAB CONTENT SHARDS -->
+          <form id="settingsMasterForm">
+            
+            <!-- 1. GENERAL SHEET -->
+            <div class="settings-sheet active" id="sheet-general">
+              <h5 class="text-success mb-3" style="font-weight:600;">General Store Parameters</h5>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="floating-group">
+                    <input type="text" class="floating-input" id="storeName" placeholder=" " value="E-Mart Main Mall Store">
+                    <label for="storeName" class="floating-label">Registered Store Business Name</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="floating-group">
+                    <input type="text" class="floating-input" id="storePhone" placeholder=" " value="042-35551234">
+                    <label for="storePhone" class="floating-label">Official Contact Helpline</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="floating-group">
+                <input type="text" class="floating-input" id="storeAddress" placeholder=" " value="Plot 12-A, Sector C, Lahore Branch, Pakistan">
+                <label for="storeAddress" class="floating-label">Warehouse Store Address Location</label>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="floating-group">
+                    <input type="text" class="floating-input" id="storeEmail" placeholder=" " value="admin@emart.com">
+                    <label for="storeEmail" class="floating-label">Default Support Email</label>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="floating-group">
+                    <input type="text" class="floating-input" id="storeTaxId" placeholder=" " value="NTN-7294819-5">
+                    <label for="storeTaxId" class="floating-label">FBR NTN Tax Registry Number</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="floating-group">
+                <textarea class="floating-textarea" id="receiptHeader" placeholder=" ">*** WELCOME TO E-MART ***&#10;Plot 12-A, Sector C, Lahore Branch</textarea>
+                <label for="receiptHeader" class="floating-label">Simulated Thermal Receipt Header Logo</label>
+              </div>
+
+              <div class="floating-group">
+                <textarea class="floating-textarea" id="receiptFooter" placeholder=" ">Thank you for choosing E-Mart!&#10;For exchanges, bring bill within 3 days.&#10;DBMS Semester Project prototype</textarea>
+                <label for="receiptFooter" class="floating-label">Thermal Receipt Footer Policy text</label>
+              </div>
+            </div>
+
+            <!-- 2. USER ROSTER SHEET -->
+            <div class="settings-sheet" id="sheet-users">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="text-success m-0" style="font-weight:600;">System Operator Accounts</h5>
+                <button type="button" class="btn btn-sm btn-outline-success px-3 rounded" style="font-size:12px; font-weight:600;" id="btnAddOperator"><i class="fa-solid fa-plus me-1"></i> Add Account</button>
+              </div>
+
+              <div class="table-responsive">
+                <table class="settings-table">
+                  <thead>
+                    <tr>
+                      <th>Account ID</th>
+                      <th>Operator Username</th>
+                      <th>System Role</th>
+                      <th>Assigned Branch</th>
+                      <th>Account Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="operatorRosterBody">
+                    <tr>
+                      <td class="font-monospace text-primary">USR-001</td>
+                      <td><b>anas_khan</b> (Anas Khan)</td>
+                      <td><span class="badge-emart badge-green">Administrator</span></td>
+                      <td>Lahore Main Branch</td>
+                      <td><span class="badge-emart badge-green">Active</span></td>
+                      <td><span class="text-muted" style="font-size:11px;">Primary Key locked</span></td>
+                    </tr>
+                    <tr>
+                      <td class="font-monospace text-primary">USR-002</td>
+                      <td><b>samina_9</b> (Samina Begum)</td>
+                      <td><span class="badge-emart badge-blue">Cashier Operator</span></td>
+                      <td>Karachi Branch</td>
+                      <td><span class="badge-emart badge-green">Active</span></td>
+                      <td><button type="button" class="btn-action-suspend" onclick="suspendUser(this)">Suspend</button></td>
+                    </tr>
+                    <tr>
+                      <td class="font-monospace text-primary">USR-003</td>
+                      <td><b>bilal_riaz</b> (Bilal Riaz)</td>
+                      <td><span class="badge-emart badge-purple">Store Manager</span></td>
+                      <td>Lahore Main Branch</td>
+                      <td><span class="badge-emart badge-green">Active</span></td>
+                      <td><button type="button" class="btn-action-suspend" onclick="suspendUser(this)">Suspend</button></td>
+                    </tr>
+                    <tr>
+                      <td class="font-monospace text-primary">USR-004</td>
+                      <td><b>ali_3</b> (Ali Raza)</td>
+                      <td><span class="badge-emart badge-blue">Cashier Operator</span></td>
+                      <td>Peshawar Branch</td>
+                      <td><span class="badge-emart badge-green">Active</span></td>
+                      <td><button type="button" class="btn-action-suspend" onclick="suspendUser(this)">Suspend</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 3. BILLING & TAX TOGGLES SHEET -->
+            <div class="settings-sheet" id="sheet-billing">
+              <h5 class="text-success mb-3" style="font-weight:600;">Active Store Financial Toggles</h5>
+              
+              <!-- Toggle 1 -->
+              <div class="setting-toggle-row">
+                <div class="toggle-meta">
+                  <span class="toggle-title">Apply standard 15% GST tax rate</span>
+                  <span class="toggle-desc">Automatically append 15% FBR GST on POS invoice checkouts.</span>
+                </div>
+                <div class="form-switch-emart active" id="toggleGst" onclick="toggleSwitch('toggleGst')">
+                  <div class="form-switch-nob"></div>
+                </div>
+              </div>
+
+              <!-- Toggle 2 -->
+              <div class="setting-toggle-row">
+                <div class="toggle-meta">
+                  <span class="toggle-title">Apply 2% POS Service Charge surcharge</span>
+                  <span class="toggle-desc">Apply 2% handling tax on digital and credit card payments.</span>
+                </div>
+                <div class="form-switch-emart" id="toggleSurcharge" onclick="toggleSwitch('toggleSurcharge')">
+                  <div class="form-switch-nob"></div>
+                </div>
+              </div>
+
+              <!-- Toggle 3 -->
+              <div class="setting-toggle-row">
+                <div class="toggle-meta">
+                  <span class="toggle-title">Enable Loyalty Point multiplier conversion</span>
+                  <span class="toggle-desc">Earn 1 loyalty reward points balance for every Rs. 100 spent in receipt cart.</span>
+                </div>
+                <div class="form-switch-emart active" id="togglePoints" onclick="toggleSwitch('togglePoints')">
+                  <div class="form-switch-nob"></div>
+                </div>
+              </div>
+
+              <!-- Toggle 4 -->
+              <div class="setting-toggle-row">
+                <div class="toggle-meta">
+                  <span class="toggle-title">Auto-print thermal ticket duplicate logs</span>
+                  <span class="toggle-desc">Silently archive checkout receipts in manager log registers.</span>
+                </div>
+                <div class="form-switch-emart active" id="toggleLogs" onclick="toggleSwitch('toggleLogs')">
+                  <div class="form-switch-nob"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4. DATABASE SQL BACKUPS SHEET -->
+            <div class="settings-sheet" id="sheet-security">
+              <h5 class="text-success mb-3" style="font-weight:600;">System Recovery & Registry Backup</h5>
+              <p class="text-secondary" style="font-size:12.5px;">Simulate complete offline database dumps to safeguard transaction catalogs and product rows. Backups generate structured standard SQL files containing table schemas and record inserts.</p>
+              
+              <div class="d-flex gap-3 flex-wrap mt-4">
+                <button type="button" class="btn-emart-primary" id="btnRunBackup"><i class="fa-solid fa-file-export me-1"></i> Simulate Full SQL Database Backup</button>
+                <button type="button" class="btn btn-outline-danger px-4 rounded" id="btnRestoreRegistry" style="font-weight:600; font-size:13.5px;"><i class="fa-solid fa-file-import me-1"></i> Simulate Restore DB Registry</button>
+              </div>
+
+              <!-- Progress bar simulator -->
+              <div class="backup-status-card" id="backupStatusPanel">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="text-secondary" id="backupPhaseText" style="font-size:12px;">Compressing catalog matrices...</span>
+                  <span class="progress-percent" id="backupPercentText">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" id="backupProgressBarFill"></div>
+                </div>
+                <span class="text-muted" style="font-size:10px;"><i class="fa-solid fa-triangle-exclamation text-amber me-1"></i> Ensure power or terminals are active during backup cycles.</span>
+              </div>
+            </div>
+
+            <!-- GLOBAL SAVE SUBMIT BUTTON -->
+            <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
+              <span class="text-secondary" style="font-size:11.5px;">E-Mart Control Center Store Settings Panel v1.4</span>
+              <button type="submit" class="btn-emart-primary" id="btnSaveAllSettings"><i class="fa-solid fa-floppy-disk me-1"></i> Save Store Settings Configurations</button>
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ADD OPERATOR MODAL (Simulated quick popup) -->
+  <div class="modal fade" id="operatorModal" tabindex="-1" aria-hidden="true" style="backdrop-filter: blur(8px);">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Register Store Operator</h5>
+          <button type="button" class="modal-close-btn" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="operatorForm">
+          <div class="modal-body">
+            <div class="floating-group">
+              <input type="text" class="floating-input" id="opName" placeholder=" " required>
+              <label for="opName" class="floating-label">Account Operator Name</label>
+            </div>
+            <div class="floating-group">
+              <select class="floating-input" id="opRole" style="height:auto; padding:12px 14px;" required>
+                <option value="Cashier Operator">Cashier Operator</option>
+                <option value="Store Manager">Store Manager</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-modal-close" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn-modal-save">Add Account</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Simulated custom Toast wrapper -->
+  <div class="toast-container">
+    <div class="toast-emart" id="emartToast">
+      <i class="fa-solid fa-circle-check"></i>
+      <span id="toastMessage">Configurations saved successfully!</span>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      
+      // 1. Sidebar Toggling on mobile sizes
+      const sidebar = document.getElementById("sidebar");
+      const toggleBtn = document.getElementById("sidebarToggle");
+
+      toggleBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("active");
+      });
+
+      // Close sidebar if clicking outside on mobile
+      document.addEventListener("click", (e) => {
+        if (window.innerWidth <= 768) {
+          if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target) && sidebar.classList.contains("active")) {
+            sidebar.classList.remove("active");
+          }
+        }
+      });
+
+      // 2. Tab selection switching logic
+      const tabBtns = document.querySelectorAll(".settings-tab-btn");
+      const sheets = document.querySelectorAll(".settings-sheet");
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          tabBtns.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          const targetSheet = btn.getAttribute("data-tab");
+          sheets.forEach(sheet => {
+            if (sheet.id === `sheet-${targetSheet}`) {
+              sheet.classList.add("active");
+            } else {
+              sheet.classList.remove("active");
+            }
+          });
+        });
+      });
+
+      // 3. Toggle Switch function
+      window.toggleSwitch = (id) => {
+        const toggle = document.getElementById(id);
+        toggle.classList.toggle("active");
+      };
+
+      // 4. Simulated custom Toast trigger
+      const emartToast = document.getElementById("emartToast");
+      const toastMessage = document.getElementById("toastMessage");
+
+      const triggerToast = (msg) => {
+        toastMessage.textContent = msg;
+        emartToast.classList.add("show");
+        setTimeout(() => {
+          emartToast.classList.remove("show");
+        }, 3000);
+      };
+
+      // 5. Roster actions suspend/unsuspend operator
+      window.suspendUser = (btn) => {
+        const statusTd = btn.parentNode.previousElementSibling;
+        if (statusTd.textContent.includes("Active")) {
+          statusTd.innerHTML = '<span class="badge-emart badge-inactive" style="background: rgba(248,81,73,0.12); color: #f85149; border: 1px solid rgba(248,81,73,0.3);">Suspended</span>';
+          btn.textContent = "Un-Suspend";
+          btn.className = "btn-action-suspend text-success border-success";
+          triggerToast("Operator profile access suspended!");
+        } else {
+          statusTd.innerHTML = '<span class="badge-emart badge-green">Active</span>';
+          btn.textContent = "Suspend";
+          btn.className = "btn-action-suspend";
+          triggerToast("Operator profile access restored!");
+        }
+      };
+
+      // Add operator quick modal
+      const opModal = new bootstrap.Modal(document.getElementById("operatorModal"));
+      document.getElementById("btnAddOperator").addEventListener("click", () => {
+        document.getElementById("opName").value = "";
+        opModal.show();
+      });
+
+      document.getElementById("operatorForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("opName").value.trim();
+        const role = document.getElementById("opRole").value;
+        if (!name) return;
+
+        const rosterBody = document.getElementById("operatorRosterBody");
+        const nextId = "USR-00" + (rosterBody.children.length + 1);
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="font-monospace text-primary">${nextId}</td>
+          <td><b>${name.toLowerCase()}</b> (${name})</td>
+          <td><span class="badge-emart ${role === 'Store Manager' ? 'badge-purple' : 'badge-blue'}">${role}</span></td>
+          <td>Lahore Main Branch</td>
+          <td><span class="badge-emart badge-green">Active</span></td>
+          <td><button type="button" class="btn-action-suspend" onclick="suspendUser(this)">Suspend</button></td>
+        `;
+        rosterBody.appendChild(row);
+        opModal.hide();
+        triggerToast("New cashier account profile established successfully!");
+      });
+
+      // 6. DB BACKUP SIMULATION & SQL DUMP DOWNLOADER
+      const btnBackup = document.getElementById("btnRunBackup");
+      const backupPanel = document.getElementById("backupStatusPanel");
+      const backupProgress = document.getElementById("backupProgressBarFill");
+      const backupPercent = document.getElementById("backupPercentText");
+      const backupPhase = document.getElementById("backupPhaseText");
+
+      btnBackup.addEventListener("click", () => {
+        btnBackup.disabled = true;
+        backupPanel.style.display = "block";
+        backupProgress.style.width = "0%";
+        backupPercent.textContent = "0%";
+        
+        let percent = 0;
+        const phases = [
+          { p: 15, text: "Locking write catalog schemas..." },
+          { p: 40, text: "Compacting transaction indexes & tables..." },
+          { p: 65, text: "Dumping product inventory records standard..." },
+          { p: 85, text: "Writing loyalty customers CRM history arrays..." },
+          { p: 100, text: "Generating SQL schema package dump file..." }
+        ];
+
+        const timer = setInterval(() => {
+          percent += 2;
+          if (percent > 100) {
+            clearInterval(timer);
+            btnBackup.disabled = false;
+            triggerToast("Full SQL Registry backup compiled and downloaded successfully!");
+            
+            // Initiate simulated browser download of mock emart_db_backup.sql file!
+            triggerBackupDownload();
+          } else {
+            backupProgress.style.width = `${percent}%`;
+            backupPercent.textContent = `${percent}%`;
+            
+            const curPhase = phases.find(ph => percent <= ph.p);
+            if (curPhase) {
+              backupPhase.textContent = curPhase.text;
+            }
+          }
+        }, 50);
+      });
+
+      const triggerBackupDownload = () => {
+        const dummySqlText = `-- E-Mart Shop Management System SQL Database Dump\n` +
+          `-- Generated on: ${new Date().toLocaleString()}\n` +
+          `-- Semester DBMS Project — Lahore Main Branch Registry\n\n` +
+          `CREATE TABLE IF NOT EXISTS \`products\` (\n` +
+          `  \`product_id\` VARCHAR(10) PRIMARY KEY,\n` +
+          `  \`name\` VARCHAR(255) NOT NULL,\n` +
+          `  \`category\` VARCHAR(100),\n` +
+          `  \`price\` DECIMAL(10,2),\n` +
+          `  \`stock\` INT\n` +
+          `);\n\n` +
+          `INSERT INTO \`products\` VALUES\n` +
+          `('PRD-001', 'Lipton Yellow Label Tea 500g', 'groceries', 950.00, 8),\n` +
+          `('PRD-002', 'Olper''s Full Cream Milk 1L', 'dairy', 290.00, 15),\n` +
+          `('PRD-003', 'National Chilli Garlic Sauce', 'groceries', 380.00, 5);\n\n` +
+          `CREATE TABLE IF NOT EXISTS \`customers\` (\n` +
+          `  \`customer_id\` VARCHAR(10) PRIMARY KEY,\n` +
+          `  \`name\` VARCHAR(255),\n` +
+          `  \`phone\` VARCHAR(15),\n` +
+          `  \`tier\` VARCHAR(10),\n` +
+          `  \`points\` INT\n` +
+          `);\n\n` +
+          `-- End of Backup Dump --\n`;
+
+        const blob = new Blob([dummySqlText], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "emart_db_backup.sql";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      };
+
+      document.getElementById("btnRestoreRegistry").addEventListener("click", () => {
+        if (confirm("⚠️ WARNING: Restoring the database registry will overwrite current local transactional lists. Proceed with simulated restoration?")) {
+          triggerToast("Simulated DBMS registry restore completed. Tables re-indexed!");
+        }
+      });
+
+      // 7. Master form submit save settings changes
+      document.getElementById("settingsMasterForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const btnSave = document.getElementById("btnSaveAllSettings");
+        btnSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving configurations...';
+        btnSave.disabled = true;
+
+        setTimeout(() => {
+          btnSave.innerHTML = '<i class="fa-solid fa-floppy-disk me-1"></i> Save Store Settings Configurations';
+          btnSave.disabled = false;
+          triggerToast("All store, tax, and billing configurations logged successfully!");
+        }, 750);
+      });
+
+    });
+  </script>
+</body>
+</html>

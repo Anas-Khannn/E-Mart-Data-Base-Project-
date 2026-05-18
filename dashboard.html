@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Mart — Control Center</title>
+  
+  <!-- Bootstrap 5.3.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Font Awesome 6.5.0 CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  
+  <!-- Google Fonts: Inter + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js 4.x CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg-primary    : #0d1117;   /* main page background — very dark charcoal */
+      --bg-secondary  : #161b22;   /* sidebar, navbar, panels — dark navy-black */
+      --bg-card       : #1c2128;   /* cards, table rows, modals */
+      --bg-input      : #0d1117;   /* form input backgrounds */
+      --bg-hover      : #21262d;   /* row hover, nav hover */
+      --green         : #238636;   /* primary action — buttons, active states */
+      --green-light   : #3fb950;   /* primary hover, highlights, links */
+      --green-bright  : #56d364;   /* success badges, profits, active status */
+      --blue          : #58a6ff;   /* secondary accent — links, info, icons */
+      --blue-dark     : #1f6feb;   /* blue buttons, info badges */
+      --purple        : #8957e5;   /* special accent — tags, loyalty, roles */
+      --amber         : #e3b341;   /* warnings, pending, tags */
+      --red           : #f85149;   /* danger, delete, low stock, error */
+      --text-primary  : #e6edf3;   /* all main text — soft white */
+      --text-secondary: #8b949e;   /* labels, placeholders, muted text */
+      --text-muted    : #484f58;   /* very subtle text, disabled */
+      --border        : #30363d;   /* all card/input/table borders */
+      --border-green  : rgba(35, 134, 54, 0.4);   /* green-tinted borders for active items */
+      --gradient-btn  : linear-gradient(135deg, #238636, #196c2e);
+      --gradient-blue : linear-gradient(135deg, #1f6feb, #0d4a9e);
+      --glow-green    : 0 0 20px rgba(35, 134, 54, 0.4);
+      --glow-blue     : 0 0 16px rgba(88, 166, 255, 0.3);
+    }
+
+    /* Global styles */
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #161b22;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #238636;
+      border-radius: 3px;
+    }
+
+    /* Layout Wrapper */
+    .dashboard-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Left Sidebar */
+    .sidebar {
+      width: 250px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-brand {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .sidebar-brand i {
+      font-size: 24px;
+      color: var(--green-light);
+      filter: drop-shadow(0 0 8px rgba(63, 185, 80, 0.5));
+    }
+
+    .sidebar-brand span {
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-menu {
+      padding: 1.5rem 0;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      overflow-y: auto;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 1.5rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .menu-item:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .menu-item.active {
+      background: rgba(35, 134, 54, 0.08);
+      color: var(--text-primary);
+      border-left-color: var(--green-light);
+      font-weight: 600;
+    }
+
+    .menu-item i {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--red);
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+
+    .btn-logout:hover {
+      opacity: 0.8;
+      text-decoration: underline;
+    }
+
+    /* Main Content Area */
+    .content-area {
+      margin-left: 250px;
+      flex-grow: 1;
+      min-width: 0; /* Prevents flex children from breaking grid layout */
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navbar */
+    .navbar {
+      height: 70px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 18px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .breadcrumbs {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .breadcrumbs a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .breadcrumbs span.current {
+      color: var(--green-light);
+      font-weight: 500;
+    }
+
+    .nav-middle {
+      flex-grow: 0.5;
+      max-width: 480px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      padding: 8px 14px 8px 36px;
+      font-size: 13.5px;
+      transition: all 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--green);
+      box-shadow: var(--glow-green);
+      outline: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .nav-icon-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 18px;
+      position: relative;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .nav-icon-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--red);
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      box-shadow: 0 0 6px var(--red);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+
+    .user-profile:hover {
+      background: var(--bg-hover);
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gradient-blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      border: 1px solid var(--blue);
+      box-shadow: var(--glow-blue);
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .user-role {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* Main Container Content */
+    .dashboard-content {
+      padding: 2rem;
+      flex-grow: 1;
+    }
+
+    /* Cards */
+    .card-emart {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      height: 100%;
+      position: relative;
+    }
+
+    .card-header-emart {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-title-emart {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    /* KPI Grid layout */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      border: 1px solid var(--border);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-green);
+    }
+
+    .kpi-icon-wrapper {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .kpi-icon-green { background: rgba(35, 134, 54, 0.15); color: var(--green-light); border: 1px solid rgba(35, 134, 54, 0.3); }
+    .kpi-icon-blue  { background: rgba(88, 166, 255, 0.12); color: var(--blue); border: 1px solid rgba(88, 166, 255, 0.3); }
+    .kpi-icon-purple{ background: rgba(137, 87, 229, 0.15); color: var(--purple); border: 1px solid rgba(137, 87, 229, 0.3); }
+    .kpi-icon-amber { background: rgba(227, 179, 65, 0.12); color: var(--amber); border: 1px solid rgba(227, 179, 65, 0.3); }
+
+    .kpi-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 26px;
+      color: var(--text-primary);
+      margin-top: 10px;
+      margin-bottom: 2px;
+    }
+
+    .kpi-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .kpi-trend {
+      font-size: 11.5px;
+      font-weight: 500;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .kpi-trend.up { color: var(--green-bright); }
+    .kpi-trend.down { color: var(--red); }
+    .kpi-trend.neutral { color: var(--text-secondary); }
+
+    /* Chart row */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    /* Tables, Alerts, Logs */
+    .feed-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* Styled Tables */
+    .table-emart {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .table-emart th {
+      background: var(--bg-hover);
+      color: var(--text-secondary);
+      font-weight: 600;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    .table-emart td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    .table-emart tbody tr {
+      transition: background 0.15s;
+    }
+
+    .table-emart tbody tr:hover {
+      background: var(--bg-hover);
+    }
+
+    /* Progress bar overrides */
+    .progress-emart {
+      height: 6px;
+      background: #161b22;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar-red { background: var(--red); }
+    .progress-bar-amber { background: var(--amber); }
+
+    /* Status Badges */
+    .badge-emart {
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .badge-active   { background: rgba(86, 211, 100, 0.15); color: #56d364; border: 1px solid rgba(86, 211, 100, 0.3); }
+    .badge-inactive { background: rgba(248, 81, 73, 0.12); color: #f85149; border: 1px solid rgba(248, 81, 73, 0.3); }
+    .badge-pending  { background: rgba(227, 179, 65, 0.12); color: #e3b341; border: 1px solid rgba(227, 179, 65, 0.3); }
+    .badge-info     { background: rgba(88, 166, 255, 0.12); color: #58a6ff; border: 1px solid rgba(88, 166, 255, 0.3); }
+    .badge-purple   { background: rgba(137, 87, 229, 0.15); color: #8957e5; border: 1px solid rgba(137, 87, 229, 0.3); }
+
+    /* Audit Logs Feed */
+    .log-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+
+    .log-item {
+      display: flex;
+      gap: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .log-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .log-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      width: 65px;
+      flex-shrink: 0;
+    }
+
+    .log-text {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+
+    .log-text b {
+      color: var(--text-primary);
+    }
+
+    /* Notification Bell Dropdown */
+    .notif-dropdown {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 320px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      padding: 12px 0;
+      display: none;
+      animation: fadeIn 0.2s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .notif-header {
+      padding: 4px 16px 10px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .notif-item {
+      padding: 10px 16px;
+      display: flex;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+      text-decoration: none;
+      color: var(--text-secondary);
+    }
+
+    .notif-item:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .notif-item:last-child {
+      border-bottom: none;
+    }
+
+    .notif-icon {
+      font-size: 14px;
+      margin-top: 3px;
+    }
+
+    .notif-body {
+      font-size: 12px;
+    }
+
+    .notif-body b {
+      color: var(--text-primary);
+    }
+
+    .notif-item-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* User Profile Dropdown */
+    .profile-dropdown {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 220px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      padding: 10px 0;
+      display: none;
+      animation: fadeIn 0.2s ease forwards;
+      z-index: 110;
+    }
+
+    .profile-drop-header {
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 6px;
+    }
+
+    .profile-drop-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .profile-drop-item:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .chart-grid {
+        grid-template-columns: 1fr;
+      }
+      .feed-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        left: -250px;
+      }
+      .sidebar.active {
+        left: 0;
+      }
+      .content-area {
+        margin-left: 0;
+      }
+      .sidebar-toggle {
+        display: block;
+      }
+      .nav-middle {
+        display: none; /* Hide search bar on mobile headers */
+      }
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .dashboard-content {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+    
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <a href="dashboard.html" class="sidebar-brand">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span>E-Mart</span>
+      </a>
+      
+      <div class="sidebar-menu">
+        <a href="dashboard.html" class="menu-item active">
+          <i class="fa-solid fa-gauge-high"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="pos.html" class="menu-item">
+          <i class="fa-solid fa-cash-register"></i>
+          <span>POS Checkout</span>
+        </a>
+        <a href="products.html" class="menu-item">
+          <i class="fa-solid fa-boxes-stacked"></i>
+          <span>Products Inventory</span>
+        </a>
+        <a href="customers.html" class="menu-item">
+          <i class="fa-solid fa-users"></i>
+          <span>Customers (CRM)</span>
+        </a>
+        <a href="reports.html" class="menu-item">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Visual Reports</span>
+        </a>
+        <a href="settings.html" class="menu-item">
+          <i class="fa-solid fa-gears"></i>
+          <span>Store Settings</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="login.html" class="btn-logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Log Out</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="content-area">
+      
+      <!-- TOP NAVBAR -->
+      <div class="navbar">
+        <div class="nav-left">
+          <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="breadcrumbs">
+            <a href="#">E-Mart</a> &nbsp;/&nbsp; <a href="#">Control Center</a> &nbsp;/&nbsp; <span class="current">Dashboard</span>
+          </div>
+        </div>
+
+        <div class="nav-middle">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" class="search-input" placeholder="Search inventory, invoices, log indexes...">
+        </div>
+
+        <div class="nav-right">
+          <!-- Notification Bell -->
+          <button class="nav-icon-btn" id="notifBell">
+            <i class="fa-solid fa-bell"></i>
+            <span class="badge-dot"></span>
+            
+            <!-- Notif Dropdown -->
+            <div class="notif-dropdown" id="notifDropdown">
+              <div class="notif-header">
+                <span>Alert Center</span>
+                <span class="badge-emart badge-active" style="font-size:10px;">3 New</span>
+              </div>
+              <a href="#" class="notif-item">
+                <i class="fa-solid fa-triangle-exclamation notif-icon text-warning"></i>
+                <div class="notif-body">
+                  <span>Critical Stock: <b>Lipton Yellow Tea</b> is below reorder threshold (8 left).</span>
+                  <div class="notif-item-time">10 minutes ago</div>
+                </div>
+              </a>
+              <a href="#" class="notif-item">
+                <i class="fa-solid fa-cash-register notif-icon text-success"></i>
+                <div class="notif-body">
+                  <span>Checkout complete: Invoice <b>#INV-8954</b> worth <b>Rs. 18,400</b>.</span>
+                  <div class="notif-item-time">45 minutes ago</div>
+                </div>
+              </a>
+              <a href="#" class="notif-item">
+                <i class="fa-solid fa-user-shield notif-icon text-info"></i>
+                <div class="notif-body">
+                  <span>Security: Admin Role delegated to cashier user <b>Anas Khan</b>.</span>
+                  <div class="notif-item-time">2 hours ago</div>
+                </div>
+              </a>
+            </div>
+          </button>
+
+          <!-- User Profile Dropdown button -->
+          <div class="user-profile" id="userProfileBtn">
+            <div class="user-avatar">AK</div>
+            <div class="user-info d-none d-sm-flex">
+              <span class="user-name">Anas Khan</span>
+              <span class="user-role">Administrator</span>
+            </div>
+            
+            <!-- Profile Dropdown list -->
+            <div class="profile-dropdown" id="profileDropdown">
+              <div class="profile-drop-header">
+                <div class="user-name">Anas Khan</div>
+                <div class="badge-emart badge-active mt-1" style="font-size:10px;">Admin Key</div>
+              </div>
+              <a href="#" class="profile-drop-item">
+                <i class="fa-solid fa-user-gear"></i> Profile Details
+              </a>
+              <a href="#" class="profile-drop-item">
+                <i class="fa-solid fa-shield-halved"></i> Access Rights
+              </a>
+              <hr class="border-secondary my-1">
+              <a href="login.html" class="profile-drop-item text-danger">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTAINER CONTENT -->
+      <div class="dashboard-content">
+        
+        <!-- 4 KPI CARDS -->
+        <div class="kpi-grid">
+          
+          <!-- Sales Card -->
+          <div class="card-emart kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="kpi-label">Sales Today</span>
+                <h3 class="kpi-value" id="kpiSales" data-target="48250">Rs. 0</h3>
+              </div>
+              <div class="kpi-icon-wrapper kpi-icon-green">
+                <i class="fa-solid fa-money-bill-trend-up"></i>
+              </div>
+            </div>
+            <div class="kpi-trend up">
+              <i class="fa-solid fa-arrow-trend-up"></i>
+              <span>+18.2% from yesterday</span>
+            </div>
+          </div>
+
+          <!-- Active Products -->
+          <div class="card-emart kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="kpi-label">Active Products</span>
+                <h3 class="kpi-value" id="kpiProducts" data-target="2840">0</h3>
+              </div>
+              <div class="kpi-icon-wrapper kpi-icon-blue">
+                <i class="fa-solid fa-boxes-stacked"></i>
+              </div>
+            </div>
+            <div class="kpi-trend neutral">
+              <i class="fa-solid fa-arrows-spin"></i>
+              <span>Live warehouse indexing</span>
+            </div>
+          </div>
+
+          <!-- Net Revenue -->
+          <div class="card-emart kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="kpi-label">Total Revenue</span>
+                <h3 class="kpi-value" id="kpiRevenue" data-target="142500">Rs. 0</h3>
+              </div>
+              <div class="kpi-icon-wrapper kpi-icon-purple">
+                <i class="fa-solid fa-sack-dollar"></i>
+              </div>
+            </div>
+            <div class="kpi-trend up">
+              <i class="fa-solid fa-circle-dollar-to-slot"></i>
+              <span>Current month index ledger</span>
+            </div>
+          </div>
+
+          <!-- Low Stock -->
+          <div class="card-emart kpi-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <span class="kpi-label">Low Stock Alerts</span>
+                <h3 class="kpi-value text-warning" id="kpiLowStock" data-target="12" style="text-shadow: 0 0 10px rgba(227,179,65,0.2);">0</h3>
+              </div>
+              <div class="kpi-icon-wrapper kpi-icon-amber">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </div>
+            </div>
+            <div class="kpi-trend down">
+              <i class="fa-solid fa-arrow-trend-down animate-pulse"></i>
+              <span>12 items require reorder</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 2 CHARTS ROW -->
+        <div class="chart-grid">
+          
+          <!-- Sales Trend Line Chart -->
+          <div class="card-emart">
+            <div class="card-header-emart">
+              <h4 class="card-title-emart"><i class="fa-solid fa-chart-line text-success me-2"></i>Daily Sales Trend (This Week)</h4>
+              <span class="badge-emart badge-info">Rs. Currency</span>
+            </div>
+            <div style="height: 280px; position: relative;">
+              <canvas id="salesTrendChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Inventory doughnut chart -->
+          <div class="card-emart">
+            <div class="card-header-emart">
+              <h4 class="card-title-emart"><i class="fa-solid fa-chart-pie text-info me-2"></i>Stock Breakdown</h4>
+            </div>
+            <div style="height: 280px; display: flex; align-items: center; justify-content: center;">
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ALERTS AND AUDIT FEEDS ROW -->
+        <div class="feed-grid">
+          
+          <!-- Critical Low-Stock Warning Table -->
+          <div class="card-emart">
+            <div class="card-header-emart">
+              <h4 class="card-title-emart text-danger"><i class="fa-solid fa-triangle-exclamation me-2 animate-pulse"></i>Critical Stock Alert</h4>
+              <a href="products.html" class="badge-emart badge-pending" style="text-decoration:none;">Replenish Inventory →</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table-emart">
+                <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>Current Stock</th>
+                    <th>Reorder Level</th>
+                    <th>Safety Index</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><b>Lipton Yellow Label 500g</b></td>
+                    <td><span class="text-danger fw-bold font-monospace">8 Pcs</span></td>
+                    <td class="font-monospace">20 Pcs</td>
+                    <td style="width: 100px;">
+                      <div class="progress-emart">
+                        <div class="progress-bar-red" style="width: 40%; height: 100%;"></div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><b>Olper's Full Cream Milk 1L</b></td>
+                    <td><span class="text-warning fw-bold font-monospace">15 Pcs</span></td>
+                    <td class="font-monospace">30 Pcs</td>
+                    <td>
+                      <div class="progress-emart">
+                        <div class="progress-bar-amber" style="width: 50%; height: 100%;"></div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><b>National Chilli Garlic Sauce</b></td>
+                    <td><span class="text-danger fw-bold font-monospace">5 Pcs</span></td>
+                    <td class="font-monospace">15 Pcs</td>
+                    <td>
+                      <div class="progress-emart">
+                        <div class="progress-bar-red" style="width: 33%; height: 100%;"></div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><b>Lux Beauty Soap Almond 150g</b></td>
+                    <td><span class="text-warning fw-bold font-monospace">18 Pcs</span></td>
+                    <td class="font-monospace">40 Pcs</td>
+                    <td>
+                      <div class="progress-emart">
+                        <div class="progress-bar-amber" style="width: 45%; height: 100%;"></div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Audit Logs Feed -->
+          <div class="card-emart">
+            <div class="card-header-emart">
+              <h4 class="card-title-emart"><i class="fa-solid fa-receipt text-success me-2"></i>Audit Logs Activity Feed</h4>
+              <span class="badge-emart badge-info" style="font-family:'JetBrains Mono';">v1.0-Trigger</span>
+            </div>
+            <div class="log-feed">
+              <div class="log-item">
+                <span class="log-time">02:44:10</span>
+                <span class="log-text">User <b>anas_khan</b> completed POS checkout: Invoice <b>#INV-9524</b>, amount <b>Rs. 1,450.00</b></span>
+              </div>
+              <div class="log-item">
+                <span class="log-time">02:30:15</span>
+                <span class="log-text">Product stock updated: <b>Olper's Full Cream Milk 1L</b> changed from <b>5 Pcs</b> to <b>15 Pcs</b></span>
+              </div>
+              <div class="log-item">
+                <span class="log-time">02:12:45</span>
+                <span class="log-text">Admin Role delegate: cashier_3 user profile privileges elevated to <b>Manager</b></span>
+              </div>
+              <div class="log-item">
+                <span class="log-time">01:50:33</span>
+                <span class="log-text">Loyalty Tier adjustment: Customer <b>Bilal Riaz</b> elevated to <span class="badge-emart badge-purple" style="font-size:10px; padding: 1px 6px;">Gold Member</span></span>
+              </div>
+              <div class="log-item">
+                <span class="log-time">01:30:00</span>
+                <span class="log-text">Shift roster logged out: Cashier session <b>samina_9</b> closed. Terminal ID <b>04</b> cleared</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      
+      // 1. Sidebar Toggling on mobile sizes
+      const sidebar = document.getElementById("sidebar");
+      const toggleBtn = document.getElementById("sidebarToggle");
+
+      toggleBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("active");
+      });
+
+      // Close sidebar if clicking outside on mobile
+      document.addEventListener("click", (e) => {
+        if (window.innerWidth <= 768) {
+          if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target) && sidebar.classList.contains("active")) {
+            sidebar.classList.remove("active");
+          }
+        }
+      });
+
+      // 2. Dropdown Menus Toggling
+      const notifBell = document.getElementById("notifBell");
+      const notifDropdown = document.getElementById("notifDropdown");
+      const userProfileBtn = document.getElementById("userProfileBtn");
+      const profileDropdown = document.getElementById("profileDropdown");
+
+      notifBell.addEventListener("click", (e) => {
+        e.stopPropagation();
+        notifDropdown.style.display = notifDropdown.style.display === "block" ? "none" : "block";
+        profileDropdown.style.display = "none";
+      });
+
+      userProfileBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
+        notifDropdown.style.display = "none";
+      });
+
+      document.addEventListener("click", () => {
+        notifDropdown.style.display = "none";
+        profileDropdown.style.display = "none";
+      });
+
+      // 3. CountUp Animation for KPI values
+      const kpis = document.querySelectorAll(".kpi-value");
+      kpis.forEach(kpi => {
+        const target = parseFloat(kpi.getAttribute("data-target"));
+        const id = kpi.getAttribute("id");
+        
+        let start = 0;
+        const duration = 1200; // ms
+        const stepTime = 15;
+        const totalSteps = duration / stepTime;
+        const increment = target / totalSteps;
+
+        const updateValue = () => {
+          start += increment;
+          if (start >= target) {
+            clearInterval(timer);
+            formatValue(target, id, kpi);
+          } else {
+            formatValue(Math.floor(start), id, kpi);
+          }
+        };
+
+        const formatValue = (val, kpiId, element) => {
+          if (kpiId === "kpiSales") {
+            element.textContent = "Rs. " + val.toLocaleString();
+          } else if (kpiId === "kpiRevenue") {
+            element.textContent = "Rs. " + val.toLocaleString();
+          } else {
+            element.textContent = val.toLocaleString();
+          }
+        };
+
+        const timer = setInterval(updateValue, stepTime);
+      });
+
+      // 4. Chart.js Configurations
+      // Daily Sales Trend Chart
+      const salesCtx = document.getElementById('salesTrendChart').getContext('2d');
+      
+      // Gradient Fill setup
+      const greenGrad = salesCtx.createLinearGradient(0, 0, 0, 260);
+      greenGrad.addColorStop(0, 'rgba(63, 185, 80, 0.45)');
+      greenGrad.addColorStop(1, 'rgba(63, 185, 80, 0.02)');
+
+      const salesChart = new Chart(salesCtx, {
+        type: 'line',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [{
+            label: 'Sales Revenue (Rs.)',
+            data: [32000, 38500, 31000, 42000, 48250, 56000, 52000],
+            borderColor: '#3fb950',
+            borderWidth: 3,
+            backgroundColor: greenGrad,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#56d364',
+            pointBorderColor: '#0d1117',
+            pointHoverRadius: 7,
+            pointRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              grid: { color: '#30363d' },
+              ticks: { color: '#8b949e', font: { family: 'JetBrains Mono' } }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: '#8b949e' }
+            }
+          }
+        }
+      });
+
+      // Category Stock Allocation Doughnut Chart
+      const catCtx = document.getElementById('categoryChart').getContext('2d');
+      const catChart = new Chart(catCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Groceries', 'Beverages', 'Personal Care', 'Dairy & Eggs', 'Home Cleaners'],
+          datasets: [{
+            data: [42, 22, 18, 11, 7],
+            backgroundColor: [
+              '#238636',  // Green
+              '#1f6feb',  // Blue-dark
+              '#8957e5',  // Purple
+              '#e3b341',  // Amber
+              '#f85149'   // Red
+            ],
+            borderColor: '#1c2128',
+            borderWidth: 2,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                color: '#e6edf3',
+                font: { family: 'Inter', size: 11.5 },
+                padding: 14
+              }
+            }
+          },
+          cutout: '65%'
+        }
+      });
+
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Mart — Products Inventory</title>
+  
+  <!-- Bootstrap 5.3.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Font Awesome 6.5.0 CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  
+  <!-- Google Fonts: Inter + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- DataTables Bootstrap 5 CSS CDN -->
+  <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary    : #0d1117;
+      --bg-secondary  : #161b22;
+      --bg-card       : #1c2128;
+      --bg-input      : #0d1117;
+      --bg-hover      : #21262d;
+      --green         : #238636;
+      --green-light   : #3fb950;
+      --green-bright  : #56d364;
+      --blue          : #58a6ff;
+      --blue-dark     : #1f6feb;
+      --purple        : #8957e5;
+      --amber         : #e3b341;
+      --red           : #f85149;
+      --text-primary  : #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted    : #484f58;
+      --border        : #30363d;
+      --border-green  : rgba(35, 134, 54, 0.4);
+      --gradient-btn  : linear-gradient(135deg, #238636, #196c2e);
+      --glow-green    : 0 0 20px rgba(35, 134, 54, 0.4);
+    }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #161b22;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #238636;
+      border-radius: 3px;
+    }
+
+    /* Layout Wrapper */
+    .dashboard-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Left Sidebar */
+    .sidebar {
+      width: 250px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-brand {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .sidebar-brand i {
+      font-size: 24px;
+      color: var(--green-light);
+    }
+
+    .sidebar-brand span {
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-menu {
+      padding: 1.5rem 0;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      overflow-y: auto;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 1.5rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .menu-item:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .menu-item.active {
+      background: rgba(35, 134, 54, 0.08);
+      color: var(--text-primary);
+      border-left-color: var(--green-light);
+      font-weight: 600;
+    }
+
+    .menu-item i {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--red);
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+
+    .btn-logout:hover {
+      opacity: 0.8;
+      text-decoration: underline;
+    }
+
+    /* Main Content Area */
+    .content-area {
+      margin-left: 250px;
+      flex-grow: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navbar */
+    .navbar {
+      height: 70px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 18px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .breadcrumbs {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .breadcrumbs a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .breadcrumbs span.current {
+      color: var(--green-light);
+      font-weight: 500;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 10px;
+      border-radius: 8px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gradient-blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      border: 1px solid var(--blue);
+    }
+
+    /* Main Container Content */
+    .dashboard-content {
+      padding: 2rem;
+      flex-grow: 1;
+    }
+
+    .page-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    /* Cards */
+    .card-emart {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 24px;
+    }
+
+    /* Banner Banner KPI Grid */
+    .banner-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .banner-kpi-item {
+      background: rgba(22, 27, 34, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .banner-kpi-icon {
+      font-size: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .banner-kpi-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+
+    .banner-kpi-lbl {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* Custom outline and buttons styles */
+    .btn-emart-primary {
+      background: var(--gradient-btn);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 13.5px;
+      padding: 9px 18px;
+      cursor: pointer;
+      box-shadow: var(--glow-green);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-emart-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* DataTables Overrides for Dark Mode */
+    .dataTables_wrapper {
+      color: var(--text-primary) !important;
+    }
+
+    .dataTables_length label, .dataTables_filter label {
+      color: var(--text-secondary) !important;
+      font-size: 12.5px;
+      margin-bottom: 12px;
+    }
+
+    .dataTables_filter input, .dataTables_length select {
+      background: var(--bg-input) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 6px !important;
+      color: var(--text-primary) !important;
+      padding: 4px 10px !important;
+      outline: none;
+    }
+
+    .dataTables_filter input:focus, .dataTables_length select:focus {
+      border-color: var(--green) !important;
+    }
+
+    .table-emart-grid {
+      border-color: var(--border) !important;
+      font-size: 13px !important;
+      margin-top: 10px !important;
+      margin-bottom: 15px !important;
+    }
+
+    .table-emart-grid th {
+      background: var(--bg-secondary) !important;
+      color: var(--text-secondary) !important;
+      font-weight: 600 !important;
+      border-bottom: 2px solid var(--border) !important;
+      padding: 12px 10px !important;
+    }
+
+    .table-emart-grid td {
+      background: var(--bg-card) !important;
+      color: var(--text-primary) !important;
+      border-bottom: 1px solid var(--border) !important;
+      padding: 12px 10px !important;
+      vertical-align: middle !important;
+    }
+
+    .table-emart-grid tbody tr:hover td {
+      background: var(--bg-hover) !important;
+    }
+
+    .dataTables_info {
+      color: var(--text-secondary) !important;
+      font-size: 12px !important;
+    }
+
+    /* Pagination styled dark */
+    .pagination .page-link {
+      background-color: var(--bg-card) !important;
+      border-color: var(--border) !important;
+      color: var(--text-secondary) !important;
+      font-size: 12px;
+    }
+
+    .pagination .page-link:hover {
+      background-color: var(--bg-hover) !important;
+      color: var(--text-primary) !important;
+    }
+
+    .pagination .page-item.active .page-link {
+      background-color: var(--green) !important;
+      border-color: var(--green) !important;
+      color: white !important;
+      box-shadow: var(--glow-green) !important;
+    }
+
+    .pagination .page-item.disabled .page-link {
+      background-color: var(--bg-primary) !important;
+      border-color: var(--border) !important;
+      opacity: 0.5;
+    }
+
+    /* Status Badges */
+    .badge-emart {
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .badge-active   { background: rgba(86,211,100,0.15); color: #56d364; border: 1px solid rgba(86,211,100,0.3); }
+    .badge-inactive { background: rgba(248,81,73,0.12); color: #f85149; border: 1px solid rgba(248,81,73,0.3); }
+    .badge-pending  { background: rgba(227,179,65,0.12); color: #e3b341; border: 1px solid rgba(227,179,65,0.3); }
+    .badge-info     { background: rgba(88,166,255,0.12); color: #58a6ff; border: 1px solid rgba(88,166,255,0.3); }
+    .badge-purple   { background: rgba(137,87,229,0.15); color: #8957e5; border: 1px solid rgba(137,87,229,0.3); }
+
+    .id-col {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      color: var(--blue);
+    }
+
+    .price-col {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--green-bright);
+    }
+
+    /* Progress bar overrides */
+    .progress-emart {
+      height: 6px;
+      background: #161b22;
+      border-radius: 3px;
+      overflow: hidden;
+      width: 70px;
+    }
+
+    .progress-bar-red { background: var(--red); }
+    .progress-bar-amber { background: var(--amber); }
+    .progress-bar-green { background: var(--green-bright); }
+
+    /* Action buttons in grid */
+    .btn-action {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 12px;
+      margin-right: 4px;
+    }
+
+    .btn-action.edit:hover {
+      background: rgba(88, 166, 255, 0.1);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .btn-action.delete:hover {
+      background: rgba(248, 81, 73, 0.1);
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    /* Filters banner row */
+    .table-filters {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 1.5rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 15px;
+    }
+
+    .filter-select {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .filter-select:focus {
+      border-color: var(--green);
+      outline: none;
+    }
+
+    /* Styled Modal Overrides */
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-primary);
+    }
+
+    .modal-header {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--red);
+    }
+
+    .modal-footer {
+      border-top: 1px solid var(--border);
+    }
+
+    /* Floating Labels Form */
+    .floating-group {
+      position: relative;
+      margin-bottom: 1.25rem;
+    }
+
+    .floating-input, .floating-select {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 13.5px;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .floating-input:focus, .floating-select:focus {
+      border-color: var(--green);
+      box-shadow: var(--glow-green);
+      outline: none;
+    }
+
+    .floating-label {
+      position: absolute;
+      left: 14px;
+      top: 12px;
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      pointer-events: none;
+      transition: 0.2s all ease-in-out;
+    }
+
+    /* Floating labels states */
+    .floating-input:focus ~ .floating-label,
+    .floating-input:not(:placeholder-shown) ~ .floating-label,
+    .floating-select:focus ~ .floating-label,
+    .floating-select:not([value=""]):valid ~ .floating-label {
+      top: -9px;
+      font-size: 11px;
+      color: var(--green-light);
+      background: var(--bg-card);
+      padding: 0 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .floating-select.has-value ~ .floating-label {
+      top: -9px;
+      font-size: 11px;
+      color: var(--green-light);
+      background: var(--bg-card);
+      padding: 0 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .error-feedback {
+      color: var(--red);
+      font-size: 11px;
+      margin-top: 3px;
+      display: none;
+    }
+
+    .btn-modal-save {
+      background: var(--gradient-btn);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 10px 22px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--glow-green);
+    }
+
+    .btn-modal-save:hover {
+      opacity: 0.9;
+    }
+
+    .btn-modal-close {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      padding: 10px 22px;
+    }
+
+    .btn-modal-close:hover {
+      background: var(--bg-hover);
+    }
+
+    /* Checkbox styled custom */
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    .custom-checkbox {
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg-input);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .custom-checkbox i {
+      color: #fff;
+      font-size: 9px;
+      display: none;
+    }
+
+    .custom-checkbox.checked {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .custom-checkbox.checked i {
+      display: block;
+    }
+
+    .checkbox-label {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .banner-kpis {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        left: -250px;
+      }
+      .sidebar.active {
+        left: 0;
+      }
+      .content-area {
+        margin-left: 0;
+      }
+      .sidebar-toggle {
+        display: block;
+      }
+      .banner-kpis {
+        grid-template-columns: 1fr;
+      }
+      .table-filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .dashboard-content {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+    
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <a href="dashboard.html" class="sidebar-brand">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span>E-Mart</span>
+      </a>
+      
+      <div class="sidebar-menu">
+        <a href="dashboard.html" class="menu-item">
+          <i class="fa-solid fa-gauge-high"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="pos.html" class="menu-item">
+          <i class="fa-solid fa-cash-register"></i>
+          <span>POS Checkout</span>
+        </a>
+        <a href="products.html" class="menu-item active">
+          <i class="fa-solid fa-boxes-stacked"></i>
+          <span>Products Inventory</span>
+        </a>
+        <a href="customers.html" class="menu-item">
+          <i class="fa-solid fa-users"></i>
+          <span>Customers (CRM)</span>
+        </a>
+        <a href="reports.html" class="menu-item">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Visual Reports</span>
+        </a>
+        <a href="settings.html" class="menu-item">
+          <i class="fa-solid fa-gears"></i>
+          <span>Store Settings</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="login.html" class="btn-logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Log Out</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="content-area">
+      
+      <!-- TOP NAVBAR -->
+      <div class="navbar">
+        <div class="nav-left">
+          <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="breadcrumbs">
+            <a href="#">E-Mart</a> &nbsp;/&nbsp; <a href="#">Control Center</a> &nbsp;/&nbsp; <span class="current">Products</span>
+          </div>
+        </div>
+
+        <div class="nav-right">
+          <div class="user-profile">
+            <div class="user-avatar">AK</div>
+            <div class="user-info d-none d-sm-flex">
+              <span class="user-name">Anas Khan</span>
+              <span class="user-role">Administrator</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTAINER CONTENT -->
+      <div class="dashboard-content">
+        
+        <!-- HEADER ROW -->
+        <div class="page-header-row">
+          <h2 class="page-title"><i class="fa-solid fa-boxes-stacked text-success me-2"></i>Products Inventory Database</h2>
+          <button class="btn-emart-primary" id="btnOpenAddModal">
+            <i class="fa-solid fa-plus-circle"></i> Add New Product
+          </button>
+        </div>
+
+        <!-- QUICK BANNER BANNER KPIS -->
+        <div class="banner-kpis">
+          <div class="banner-kpi-item">
+            <div class="banner-kpi-icon bg-secondary text-success"><i class="fa-solid fa-layer-group"></i></div>
+            <div>
+              <div class="banner-kpi-val" id="kpiTotalCount">10 items</div>
+              <div class="banner-kpi-lbl">Total Indexed</div>
+            </div>
+          </div>
+          <div class="banner-kpi-item">
+            <div class="banner-kpi-icon bg-secondary text-warning"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div>
+              <div class="banner-kpi-val" id="kpiLowCount">4 items</div>
+              <div class="banner-kpi-lbl">Low Stock Warnings</div>
+            </div>
+          </div>
+          <div class="banner-kpi-item">
+            <div class="banner-kpi-icon bg-secondary text-danger"><i class="fa-solid fa-circle-exclamation"></i></div>
+            <div>
+              <div class="banner-kpi-val">0 items</div>
+              <div class="banner-kpi-lbl">Out of Stock</div>
+            </div>
+          </div>
+          <div class="banner-kpi-item">
+            <div class="banner-kpi-icon bg-secondary text-primary"><i class="fa-solid fa-cubes"></i></div>
+            <div>
+              <div class="banner-kpi-val">4 categories</div>
+              <div class="banner-kpi-lbl">Total Categories</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FILTER BAR -->
+        <div class="table-filters">
+          <div class="d-flex align-items-center gap-2">
+            <span class="text-secondary" style="font-size:12.5px;">Filter Category:</span>
+            <select class="filter-select" id="filterCategory">
+              <option value="all">All Categories</option>
+              <option value="groceries">Groceries</option>
+              <option value="beverages">Beverages</option>
+              <option value="personal-care">Personal Care</option>
+              <option value="dairy">Dairy & Eggs</option>
+            </select>
+          </div>
+
+          <div class="checkbox-container">
+            <div class="custom-checkbox" id="filterLowStock">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <span class="checkbox-label" id="filterLowStockLbl">Show Low Stock Warning Alerts Only</span>
+          </div>
+        </div>
+
+        <!-- MAIN TABLE GRID -->
+        <div class="card-emart">
+          <div class="table-responsive">
+            <table class="table table-emart-grid" id="productsTable" style="width:100%;">
+              <thead>
+                <tr>
+                  <th>Product ID</th>
+                  <th>Product Name</th>
+                  <th>Category</th>
+                  <th>Selling Price</th>
+                  <th>Current Stock</th>
+                  <th>Reorder Min</th>
+                  <th>Safety Index</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody">
+                <!-- Hardcoded products entries -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ADD / EDIT PRODUCT MODAL -->
+  <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true" style="backdrop-filter: blur(8px);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">Add New Product</h5>
+          <button type="button" class="modal-close-btn" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <form id="productForm" novalidate>
+          <div class="modal-body">
+            <!-- Hidden input for edit mode identification -->
+            <input type="hidden" id="editRowId" value="">
+
+            <!-- Product ID (Readonly) -->
+            <div class="floating-group">
+              <input type="text" class="floating-input" id="prodId" placeholder=" " readonly style="opacity:0.7;">
+              <label for="prodId" class="floating-label">Generated Product ID</label>
+            </div>
+
+            <!-- Product Name -->
+            <div class="floating-group">
+              <input type="text" class="floating-input" id="prodName" placeholder=" " required>
+              <label for="prodName" class="floating-label">Product Name</label>
+              <div class="error-feedback" id="prodNameError">Product name is required</div>
+            </div>
+
+            <!-- Category -->
+            <div class="floating-group">
+              <select class="floating-select" id="prodCategory" required>
+                <option value="" disabled selected hidden></option>
+                <option value="groceries">Groceries</option>
+                <option value="beverages">Beverages</option>
+                <option value="personal-care">Personal Care</option>
+                <option value="dairy">Dairy & Eggs</option>
+              </select>
+              <label for="prodCategory" class="floating-label">Product Category</label>
+              <div class="error-feedback" id="prodCategoryError">Category is required</div>
+            </div>
+
+            <div class="row">
+              <!-- Selling Price -->
+              <div class="col-md-6">
+                <div class="floating-group">
+                  <input type="number" class="floating-input" id="prodPrice" placeholder=" " required>
+                  <label for="prodPrice" class="floating-label">Selling Price (Rs.)</label>
+                  <div class="error-feedback" id="prodPriceError">Price is required</div>
+                </div>
+              </div>
+              
+              <!-- Current Stock -->
+              <div class="col-md-6">
+                <div class="floating-group">
+                  <input type="number" class="floating-input" id="prodStock" placeholder=" " required>
+                  <label for="prodStock" class="floating-label">Current Stock</label>
+                  <div class="error-feedback" id="prodStockError">Stock is required</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Reorder Level -->
+            <div class="floating-group">
+              <input type="number" class="floating-input" id="prodReorder" placeholder=" " required>
+              <label for="prodReorder" class="floating-label">Minimum Reorder Limit Level</label>
+              <div class="error-feedback" id="prodReorderError">Reorder level is required</div>
+            </div>
+
+          </div>
+          
+          <div class="modal-footer">
+            <button type="button" class="btn-modal-close" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn-modal-save" id="btnModalSave">Save Product Record</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- DELETE CONFIRMATION MODAL -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true" style="backdrop-filter: blur(8px);">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 380px;">
+      <div class="modal-content border border-danger">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger"><i class="fa-solid fa-triangle-exclamation me-2 animate-pulse"></i>Confirm Delete</h5>
+          <button type="button" class="modal-close-btn" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body text-center p-4">
+          <p class="text-secondary mb-3" style="font-size:13.5px;">Are you sure you want to delete product record <b id="deleteRecordName" class="text-white"></b> from warehouse registers?</p>
+          <span class="badge bg-secondary border border-secondary text-danger py-1 px-3 fs-7" style="font-size:11px;">⚠️ THIS CANNOT BE UNDONE</span>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn-modal-close" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger px-4 rounded" id="btnConfirmDelete" style="font-weight:600; padding: 8px 20px;">Yes, Delete Record</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery 3.7.1 CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- DataTables jQuery JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/datatables.net@1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      
+      // 1. Sidebar Toggling on mobile sizes
+      const sidebar = document.getElementById("sidebar");
+      const toggleBtn = document.getElementById("sidebarToggle");
+
+      toggleBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("active");
+      });
+
+      // Close sidebar if clicking outside on mobile
+      document.addEventListener("click", (e) => {
+        if (window.innerWidth <= 768) {
+          if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target) && sidebar.classList.contains("active")) {
+            sidebar.classList.remove("active");
+          }
+        }
+      });
+
+      // 2. Custom Styled dropdown change for floating label trigger
+      const prodCategorySelect = document.getElementById("prodCategory");
+      prodCategorySelect.addEventListener("change", () => {
+        if (prodCategorySelect.value) {
+          prodCategorySelect.classList.add("has-value");
+        } else {
+          prodCategorySelect.classList.remove("has-value");
+        }
+      });
+
+      // 3. Products Hardcoded Dataset
+      let productsList = [
+        { id: "PRD-001", name: "Lipton Yellow Label Tea 500g", category: "groceries", price: 950, stock: 8, reorder: 20, active: true },
+        { id: "PRD-002", name: "Olper's Full Cream Milk 1L", category: "dairy", price: 290, stock: 15, reorder: 30, active: true },
+        { id: "PRD-003", name: "National Chilli Garlic Sauce", category: "groceries", price: 380, stock: 5, reorder: 15, active: true },
+        { id: "PRD-004", name: "Lux Beauty Soap Almond 150g", category: "personal-care", price: 180, stock: 48, reorder: 40, active: true },
+        { id: "PRD-005", name: "Coca Cola 1.5 Litre Bottle", category: "beverages", price: 190, stock: 35, reorder: 20, active: true },
+        { id: "PRD-006", name: "Tapal Danedar Leaf Tea 450g", category: "groceries", price: 850, stock: 14, reorder: 10, active: true },
+        { id: "PRD-007", name: "Nestlé Pure Life Water 1.5L", category: "beverages", price: 90, stock: 60, reorder: 15, active: true },
+        { id: "PRD-008", name: "Sufi Sunflower Cooking Oil 5L", category: "groceries", price: 2450, stock: 12, reorder: 10, active: true },
+        { id: "PRD-009", name: "Colgate MaxFresh Gel 150g", category: "personal-care", price: 260, stock: 24, reorder: 15, active: true },
+        { id: "PRD-010", name: "Dawn Sliced Bread Family Size", category: "groceries", price: 220, stock: 3, reorder: 5, active: true }
+      ];
+
+      // 4. Products Table Renderer
+      let table;
+
+      const renderTable = () => {
+        const tableBody = document.getElementById("productsTableBody");
+        tableBody.innerHTML = "";
+
+        productsList.forEach(p => {
+          const isLow = p.stock <= p.reorder;
+          
+          // Safety Index calculator
+          let safetyVal = Math.round((p.stock / p.reorder) * 100);
+          if (safetyVal > 100) safetyVal = 100;
+          
+          let safetyBarClass = "progress-bar-green";
+          if (safetyVal <= 35) safetyBarClass = "progress-bar-red";
+          else if (safetyVal <= 65) safetyBarClass = "progress-bar-amber";
+
+          const stockText = isLow ? `<span class="text-danger fw-bold"><i class="fa-solid fa-circle-exclamation me-1"></i>${p.stock} Pcs</span>` : `<span class="text-success">${p.stock} Pcs</span>`;
+
+          const row = document.createElement("tr");
+          row.setAttribute("data-row-id", p.id);
+          row.innerHTML = `
+            <td class="id-col">${p.id}</td>
+            <td><b>${p.name}</b></td>
+            <td><span class="badge-emart ${getCategoryBadge(p.category)}">${capitalize(p.category)}</span></td>
+            <td class="price-col">Rs. ${p.price.toLocaleString()}</td>
+            <td>${stockText}</td>
+            <td class="font-monospace text-secondary">${p.reorder} Pcs</td>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="progress-emart">
+                  <div class="${safetyBarClass}" style="width: ${safetyVal}%; height: 100%;"></div>
+                </div>
+                <span class="font-monospace text-muted" style="font-size:10px;">${safetyVal}%</span>
+              </div>
+            </td>
+            <td><span class="badge-emart badge-active">Active</span></td>
+            <td>
+              <button class="btn-action edit" onclick="triggerEditProduct('${p.id}')"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn-action delete" onclick="triggerDeleteProduct('${p.id}')"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+
+        // Re-calculate quick banner KPI summary values
+        document.getElementById("kpiTotalCount").textContent = `${productsList.length} items`;
+        const lowCount = productsList.filter(p => p.stock <= p.reorder).length;
+        document.getElementById("kpiLowCount").textContent = `${lowCount} items`;
+
+        // If DataTables already initialized, destroy and rebuild to pickup changes
+        if ($.fn.DataTable.isDataTable('#productsTable')) {
+          table.destroy();
+        }
+
+        // Initialize styled jQuery DataTable
+        table = $('#productsTable').DataTable({
+          "pageLength": 10,
+          "lengthMenu": [5, 10, 25, 50],
+          "ordering": true,
+          "dom": '<"d-flex justify-content-between align-items-center"l>t<"d-flex justify-content-between align-items-center mt-3"ip>',
+          "language": {
+            "search": "",
+            "searchPlaceholder": "Search table entries..."
+          }
+        });
+      };
+
+      const capitalize = (str) => {
+        if (str === "personal-care") return "Personal Care";
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      };
+
+      const getCategoryBadge = (cat) => {
+        if (cat === "groceries") return "badge-active";
+        if (cat === "beverages") return "badge-pending";
+        if (cat === "personal-care") return "badge-info";
+        if (cat === "dairy") return "badge-purple";
+        return "badge-secondary";
+      };
+
+      renderTable();
+
+      // 5. Filters Logic
+      const filterCategory = document.getElementById("filterCategory");
+      const filterLowStock = document.getElementById("filterLowStock");
+      let isLowFiltered = false;
+
+      filterCategory.addEventListener("change", () => {
+        applyFilters();
+      });
+
+      filterLowStock.addEventListener("click", () => {
+        isLowFiltered = !isLowFiltered;
+        if (isLowFiltered) {
+          filterLowStock.classList.add("checked");
+        } else {
+          filterLowStock.classList.remove("checked");
+        }
+        applyFilters();
+      });
+
+      const applyFilters = () => {
+        const catVal = filterCategory.value;
+        
+        // Reset Search
+        table.search('').draw();
+
+        // Custom filter function for DataTables
+        $.fn.dataTable.ext.search.push(
+          function(settings, data, dataIndex) {
+            const rowId = table.row(dataIndex).node().getAttribute("data-row-id");
+            const prod = productsList.find(p => p.id === rowId);
+            if (!prod) return false;
+
+            const categoryMatch = catVal === "all" || prod.category === catVal;
+            const stockMatch = !isLowFiltered || (prod.stock <= prod.reorder);
+
+            return categoryMatch && stockMatch;
+          }
+        );
+
+        table.draw();
+        
+        // Clear filter function so it doesn't pile up recursively
+        $.fn.dataTable.ext.search.pop();
+      };
+
+      // 6. CRUD MODALS TRIGGERS
+      const productModal = new bootstrap.Modal(document.getElementById("productModal"));
+      const productForm = document.getElementById("productForm");
+
+      // Open ADD Modal
+      document.getElementById("btnOpenAddModal").addEventListener("click", () => {
+        document.getElementById("modalTitle").textContent = "Add New Product";
+        document.getElementById("editRowId").value = "";
+        
+        // Reset fields
+        const newId = "PRD-" + String(productsList.length + 1).padStart(3, '0');
+        document.getElementById("prodId").value = newId;
+        
+        document.getElementById("prodName").value = "";
+        prodCategorySelect.value = "";
+        prodCategorySelect.classList.remove("has-value");
+        document.getElementById("prodPrice").value = "";
+        document.getElementById("prodStock").value = "";
+        document.getElementById("prodReorder").value = "";
+
+        // Clear error highlights
+        ["prodName", "prodCategory", "prodPrice", "prodStock", "prodReorder"].forEach(fid => {
+          document.getElementById(fid).classList.remove("is-invalid");
+          document.getElementById(fid + "Error").style.display = "none";
+        });
+
+        productModal.show();
+      });
+
+      // EDIT product trigger (Bound to window context for global DT onclick callback)
+      window.triggerEditProduct = (id) => {
+        const prod = productsList.find(p => p.id === id);
+        if (!prod) return;
+
+        document.getElementById("modalTitle").textContent = "Edit Product Record";
+        document.getElementById("editRowId").value = prod.id;
+        document.getElementById("prodId").value = prod.id;
+        
+        document.getElementById("prodName").value = prod.name;
+        
+        prodCategorySelect.value = prod.category;
+        prodCategorySelect.classList.add("has-value");
+        
+        document.getElementById("prodPrice").value = prod.price;
+        document.getElementById("prodStock").value = prod.stock;
+        document.getElementById("prodReorder").value = prod.reorder;
+
+        // Clear errors
+        ["prodName", "prodCategory", "prodPrice", "prodStock", "prodReorder"].forEach(fid => {
+          document.getElementById(fid).classList.remove("is-invalid");
+          document.getElementById(fid + "Error").style.display = "none";
+        });
+
+        productModal.show();
+      };
+
+      // CRUD: Save (Add/Update) Product Submission
+      productForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        let isFormValid = true;
+        const formFields = ["prodName", "prodCategory", "prodPrice", "prodStock", "prodReorder"];
+
+        // Clear errors
+        formFields.forEach(fid => {
+          document.getElementById(fid).classList.remove("is-invalid");
+          document.getElementById(fid + "Error").style.display = "none";
+        });
+
+        // Validate
+        const nameVal = document.getElementById("prodName").value.trim();
+        if (!nameVal) {
+          document.getElementById("prodName").classList.add("is-invalid");
+          document.getElementById("prodNameError").style.display = "block";
+          isFormValid = false;
+        }
+
+        const catVal = document.getElementById("prodCategory").value;
+        if (!catVal) {
+          document.getElementById("prodCategory").classList.add("is-invalid");
+          document.getElementById("prodCategoryError").style.display = "block";
+          isFormValid = false;
+        }
+
+        const priceVal = parseFloat(document.getElementById("prodPrice").value);
+        if (isNaN(priceVal) || priceVal <= 0) {
+          document.getElementById("prodPrice").classList.add("is-invalid");
+          document.getElementById("prodPriceError").style.display = "block";
+          isFormValid = false;
+        }
+
+        const stockVal = parseInt(document.getElementById("prodStock").value);
+        if (isNaN(stockVal) || stockVal < 0) {
+          document.getElementById("prodStock").classList.add("is-invalid");
+          document.getElementById("prodStockError").style.display = "block";
+          isFormValid = false;
+        }
+
+        const reorderVal = parseInt(document.getElementById("prodReorder").value);
+        if (isNaN(reorderVal) || reorderVal < 0) {
+          document.getElementById("prodReorder").classList.add("is-invalid");
+          document.getElementById("prodReorderError").style.display = "block";
+          isFormValid = false;
+        }
+
+        if (!isFormValid) return;
+
+        const btnSave = document.getElementById("btnModalSave");
+        btnSave.textContent = "Saving...";
+        btnSave.disabled = true;
+
+        setTimeout(() => {
+          const editId = document.getElementById("editRowId").value;
+          
+          if (editId) {
+            // Edit mode: Update existing entry
+            const index = productsList.findIndex(p => p.id === editId);
+            if (index !== -1) {
+              productsList[index].name = nameVal;
+              productsList[index].category = catVal;
+              productsList[index].price = priceVal;
+              productsList[index].stock = stockVal;
+              productsList[index].reorder = reorderVal;
+            }
+          } else {
+            // Add mode: Inject new product
+            const newId = document.getElementById("prodId").value;
+            productsList.push({
+              id: newId,
+              name: nameVal,
+              category: catVal,
+              price: priceVal,
+              stock: stockVal,
+              reorder: reorderVal,
+              active: true
+            });
+          }
+
+          renderTable();
+          productModal.hide();
+          
+          // Reset button
+          btnSave.textContent = "Save Product Record";
+          btnSave.disabled = false;
+        }, 600);
+      });
+
+      // DELETE MODAL ACTIONS
+      const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
+      let targetDeleteId = "";
+
+      window.triggerDeleteProduct = (id) => {
+        const prod = productsList.find(p => p.id === id);
+        if (!prod) return;
+
+        targetDeleteId = id;
+        document.getElementById("deleteRecordName").textContent = `${prod.name} (${prod.id})`;
+        deleteModal.show();
+      };
+
+      document.getElementById("btnConfirmDelete").addEventListener("click", () => {
+        if (!targetDeleteId) return;
+
+        const btnDel = document.getElementById("btnConfirmDelete");
+        btnDel.textContent = "Deleting...";
+        btnDel.disabled = true;
+
+        setTimeout(() => {
+          productsList = productsList.filter(p => p.id !== targetDeleteId);
+          
+          renderTable();
+          deleteModal.hide();
+
+          btnDel.textContent = "Yes, Delete Record";
+          btnDel.disabled = false;
+          targetDeleteId = "";
+        }, 500);
+      });
+
+    });
+  </script>
+</body>
+</html>

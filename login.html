@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Mart — Login</title>
+  
+  <!-- Bootstrap 5.3.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Font Awesome 6.5.0 CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  
+  <!-- Google Fonts: Inter + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-primary    : #0d1117;   /* main page background — very dark charcoal */
+      --bg-secondary  : #161b22;   /* sidebar, navbar, panels — dark navy-black */
+      --bg-card       : #1c2128;   /* cards, table rows, modals */
+      --bg-input      : #0d1117;   /* form input backgrounds */
+      --bg-hover      : #21262d;   /* row hover, nav hover */
+      --green         : #238636;   /* primary action — buttons, active states */
+      --green-light   : #3fb950;   /* primary hover, highlights, links */
+      --green-bright  : #56d364;   /* success badges, profits, active status */
+      --blue          : #58a6ff;   /* secondary accent — links, info, icons */
+      --blue-dark     : #1f6feb;   /* blue buttons, info badges */
+      --purple        : #8957e5;   /* special accent — tags, loyalty, roles */
+      --amber         : #e3b341;   /* warnings, pending, tags */
+      --red           : #f85149;   /* danger, delete, low stock, error */
+      --text-primary  : #e6edf3;   /* all main text — soft white */
+      --text-secondary: #8b949e;   /* labels, placeholders, muted text */
+      --text-muted    : #484f58;   /* very subtle text, disabled */
+      --border        : #30363d;   /* all card/input/table borders */
+      --border-green  : rgba(35, 134, 54, 0.4);   /* green-tinted borders for active items */
+      --gradient-btn  : linear-gradient(135deg, #238636, #196c2e);
+      --gradient-blue : linear-gradient(135deg, #1f6feb, #0d4a9e);
+      --glow-green    : 0 0 20px rgba(35, 134, 54, 0.4);
+      --glow-blue     : 0 0 16px rgba(88, 166, 255, 0.3);
+    }
+
+    /* Global Styles */
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #161b22;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #238636;
+      border-radius: 3px;
+    }
+
+    /* Split Layout */
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .brand-panel {
+      flex: 1;
+      background: #0d1117;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3rem;
+      border-right: 1px solid var(--border);
+    }
+
+    .right-panel {
+      flex: 1;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      perspective: 1000px;
+    }
+
+    /* Dot Grid Drift Animation */
+    .brand-panel::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      right: -50%;
+      bottom: -50%;
+      background-image: radial-gradient(circle, #30363d 1.2px, transparent 1.2px);
+      background-size: 32px 32px;
+      z-index: 1;
+      pointer-events: none;
+      animation: driftGrid 12s linear infinite;
+    }
+
+    @keyframes driftGrid {
+      from { transform: translate(0, 0); }
+      to { transform: translate(32px, 32px); }
+    }
+
+    /* Particle Dots */
+    .particles-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.6;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 0.6; }
+      50% { transform: translateY(-24px) scale(1.25); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 0.6; }
+    }
+
+    /* 3D Store Icon */
+    .logo-3d-wrapper {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 220px;
+      z-index: 3;
+      transform-style: preserve-3d;
+      margin-top: 2rem;
+    }
+
+    .logo-3d {
+      font-size: 90px;
+      color: var(--green-light);
+      filter: drop-shadow(0 0 25px rgba(63, 185, 80, 0.65));
+      animation: spin3d 10s linear infinite;
+      transform-style: preserve-3d;
+    }
+
+    @keyframes spin3d {
+      0%   { transform: perspective(600px) rotateY(0deg) rotateX(8deg); }
+      50%  { transform: perspective(600px) rotateY(180deg) rotateX(-8deg); }
+      100% { transform: perspective(600px) rotateY(360deg) rotateX(8deg); }
+    }
+
+    /* Brand Typography */
+    .brand-content {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .brand-title {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 40px;
+      color: var(--text-primary);
+      text-shadow: 0 0 24px rgba(63, 185, 80, 0.4);
+      margin-bottom: 0.25rem;
+    }
+
+    .brand-title i {
+      color: var(--green-light);
+      margin-right: 10px;
+    }
+
+    .brand-tagline {
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+    }
+
+    /* Feature Pills */
+    .feature-pills {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 1.5rem auto;
+      max-width: 440px;
+    }
+
+    .feature-pill {
+      display: inline-block;
+      background: rgba(35, 134, 54, 0.12);
+      border: 1px solid rgba(63, 185, 80, 0.3);
+      border-radius: 50px;
+      padding: 8px 18px;
+      color: var(--green-light);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Bottom Stats Cards */
+    .stats-row {
+      position: relative;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: auto;
+    }
+
+    .stat-card {
+      background: rgba(22, 27, 34, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 10px;
+      text-align: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .stat-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--green-light);
+      margin-bottom: 2px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-footer {
+      position: relative;
+      z-index: 3;
+      text-align: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 1.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    /* Right Glassmorphism Panel Form */
+    .auth-card {
+      background: rgba(22, 27, 34, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 420px;
+      z-index: 5;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .auth-heading {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 26px;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-subheading {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Floating Label Pattern */
+    .floating-group {
+      position: relative;
+      margin-bottom: 1.25rem;
+    }
+
+    .floating-input {
+      width: 100%;
+      padding: 14px 44px 14px 16px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .floating-input:focus {
+      border-color: var(--green);
+      box-shadow: var(--glow-green);
+      outline: none;
+    }
+
+    .floating-label {
+      position: absolute;
+      left: 16px;
+      top: 14px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      pointer-events: none;
+      transition: 0.2s all ease-in-out;
+    }
+
+    /* Floating Label On Focus or Value Present */
+    .floating-input:focus ~ .floating-label,
+    .floating-input:not(:placeholder-shown) ~ .floating-label {
+      top: -9px;
+      font-size: 11px;
+      color: var(--green-light);
+      background: var(--bg-primary);
+      padding: 0 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .floating-icon {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .floating-input:focus ~ .floating-icon {
+      color: var(--green);
+    }
+
+    /* Input Field Error State */
+    .floating-input.is-invalid {
+      border-color: var(--red) !important;
+      box-shadow: 0 0 10px rgba(248, 81, 73, 0.2) !important;
+    }
+    
+    .floating-input.is-invalid ~ .floating-label {
+      color: var(--red) !important;
+    }
+
+    .floating-input.is-invalid ~ .floating-icon {
+      color: var(--red) !important;
+    }
+
+    .error-feedback {
+      color: var(--red);
+      font-size: 12px;
+      margin-top: 4px;
+      display: none;
+    }
+
+    /* Custom Toggle Switch */
+    .switch-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .custom-switch {
+      width: 42px;
+      height: 22px;
+      background: #30363d;
+      border-radius: 11px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      display: inline-block;
+    }
+
+    .custom-switch.on {
+      background: var(--green);
+    }
+
+    .custom-switch-knob {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: left 0.3s cubic-bezier(0.3, 1.5, 0.7, 1);
+    }
+
+    .custom-switch.on .custom-switch-knob {
+      left: 22px;
+    }
+
+    .switch-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      color: var(--blue);
+      text-decoration: none;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+
+    .forgot-link:hover {
+      color: var(--green-light);
+      text-decoration: underline;
+    }
+
+    /* Buttons */
+    .btn-submit {
+      width: 100%;
+      height: 46px;
+      background: var(--gradient-btn);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      box-shadow: var(--glow-green);
+      position: relative;
+      overflow: hidden;
+      margin-top: 1.5rem;
+    }
+
+    .btn-submit:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:active {
+      transform: translateY(1px);
+    }
+
+    /* Shake Animation for Invalid State */
+    .shake-anim {
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 1.75rem 0;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider-text {
+      padding: 0 10px;
+    }
+
+    /* Social Buttons */
+    .social-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .social-btn {
+      background: #21262d;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      padding: 10px;
+      width: 48%;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .social-btn:hover {
+      background: var(--bg-hover);
+      border-color: var(--blue);
+      color: var(--text-primary);
+    }
+
+    .social-btn.google b {
+      color: #ea4335;
+      font-size: 15px;
+    }
+
+    /* Bottom Link */
+    .auth-bottom {
+      text-align: center;
+      margin-top: 1.75rem;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .auth-bottom-link {
+      color: var(--green-light);
+      text-decoration: none;
+      font-weight: 500;
+      transition: text-shadow 0.2s;
+    }
+
+    .auth-bottom-link:hover {
+      text-decoration: underline;
+      text-shadow: 0 0 8px rgba(63, 185, 80, 0.4);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .auth-container {
+        flex-direction: column;
+      }
+      .brand-panel {
+        padding: 2rem;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .right-panel {
+        padding: 2.5rem 1.5rem;
+      }
+      .logo-3d-wrapper {
+        height: 140px;
+      }
+      .logo-3d {
+        font-size: 60px;
+      }
+      .brand-title {
+        font-size: 30px;
+      }
+      .stats-row {
+        margin-top: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    
+    <!-- LEFT BRAND PANEL -->
+    <div class="brand-panel">
+      <!-- Animated Floating Particles -->
+      <div class="particles-container" id="particles"></div>
+      
+      <!-- Top Section Info / Project Marker -->
+      <div class="d-flex justify-content-between align-items-center w-100 position-relative" style="z-index:3;">
+        <span class="text-uppercase font-monospace text-secondary fs-6" style="letter-spacing:1px;">DBMS Semester Project</span>
+        <span class="badge bg-secondary border border-secondary text-primary font-monospace px-2 py-1">v1.0-Static</span>
+      </div>
+
+      <!-- 3D Rotating Logo Icon -->
+      <div class="logo-3d-wrapper">
+        <div class="logo-3d">
+          <i class="fa-solid fa-store"></i>
+        </div>
+      </div>
+
+      <!-- Typography -->
+      <div class="brand-content">
+        <h1 class="brand-title">
+          <i class="fa-solid fa-cart-shopping"></i>E-Mart
+        </h1>
+        <p class="brand-tagline">Smart Shopping. Smarter Management.</p>
+      </div>
+
+      <!-- Staggered feature pills -->
+      <div class="feature-pills">
+        <a href="#" class="feature-pill" style="animation-delay: 0.1s;"><i class="fa-solid fa-box-open me-1"></i> Inventory Control</a>
+        <a href="#" class="feature-pill" style="animation-delay: 0.3s;"><i class="fa-solid fa-cash-register me-1"></i> POS & Sales</a>
+        <a href="#" class="feature-pill" style="animation-delay: 0.5s;"><i class="fa-solid fa-chart-line me-1"></i> Live Analytics</a>
+        <a href="#" class="feature-pill" style="animation-delay: 0.7s;"><i class="fa-solid fa-users me-1"></i> Customer CRM</a>
+      </div>
+
+      <!-- Stats row -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-number">1,200+</div>
+          <div class="stat-label">Products</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">50K+</div>
+          <div class="stat-label">Sales</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">99.9%</div>
+          <div class="stat-label">Uptime</div>
+        </div>
+      </div>
+
+      <!-- DBMS Footer text -->
+      <div class="brand-footer">
+        University DBMS Semester Project &copy; 2026
+      </div>
+    </div>
+
+    <!-- RIGHT FORM PANEL -->
+    <div class="right-panel">
+      
+      <!-- Glassmorphism Card -->
+      <div class="auth-card" id="authCard">
+        
+        <div class="auth-header">
+          <h2 class="auth-heading">Welcome back 👋</h2>
+          <p class="auth-subheading">Sign in to your E-Mart account</p>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" novalidate>
+          
+          <!-- Email Field -->
+          <div class="floating-group">
+            <input type="email" class="floating-input" id="email" placeholder=" " required>
+            <label for="email" class="floating-label">Email Address</label>
+            <i class="fa-solid fa-envelope floating-icon"></i>
+            <div class="error-feedback" id="emailError">Please enter a valid email address</div>
+          </div>
+
+          <!-- Password Field -->
+          <div class="floating-group">
+            <input type="password" class="floating-input" id="password" placeholder=" " required>
+            <label for="password" class="floating-label">Password</label>
+            <i class="fa-solid fa-lock floating-icon" id="togglePassword"></i>
+            <div class="error-feedback" id="passwordError">Password cannot be empty</div>
+          </div>
+
+          <!-- Options Row -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="switch-container">
+              <div class="custom-switch" id="rememberMe">
+                <div class="custom-switch-knob"></div>
+              </div>
+              <span class="switch-label" id="rememberLabel">Remember me</span>
+            </div>
+            <a href="forgot-password.html" class="forgot-link">Forgot password?</a>
+          </div>
+
+          <!-- Action Button -->
+          <button type="submit" class="btn-submit" id="btnSubmit">
+            <span>Sign In</span>
+            <i class="fa-solid fa-arrow-right" id="submitIcon"></i>
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="divider">
+          <span class="divider-text">or continue with</span>
+        </div>
+
+        <!-- Social Buttons -->
+        <div class="social-row">
+          <a href="#" class="social-btn google">
+            <b>G</b> Continue with Google
+          </a>
+          <a href="#" class="social-btn">
+            <i class="fa-brands fa-github"></i> Continue with GitHub
+          </a>
+        </div>
+
+        <!-- Bottom Link -->
+        <div class="auth-bottom">
+          Don't have an account? 
+          <a href="signup.html" class="auth-bottom-link">Sign up →</a>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Generate Floating Particles
+      const particlesContainer = document.getElementById("particles");
+      const colors = ["rgba(35, 134, 54, 0.7)", "rgba(88, 166, 255, 0.5)"];
+      const particleCount = 20;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement("div");
+        const size = Math.floor(Math.random() * 4) + 3; // 3px to 6px
+        const left = Math.floor(Math.random() * 95) + 2; // 2% to 97%
+        const top = Math.floor(Math.random() * 90) + 5; // 5% to 95%
+        const delay = Math.random() * 5; // 0s to 5s
+        const duration = Math.random() * 4 + 3; // 3s to 7s
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        particle.classList.add("particle");
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${left}%`;
+        particle.style.top = `${top}%`;
+        particle.style.backgroundColor = color;
+        particle.style.animation = `floatUp ${duration}s ease-in-out ${delay}s infinite`;
+        
+        // Random glow effect
+        if (Math.random() > 0.5) {
+          particle.style.boxShadow = `0 0 10px ${color}`;
+        }
+
+        particlesContainer.appendChild(particle);
+      }
+
+      // 2. 3D Mouse Tilt Script
+      const card = document.getElementById("authCard");
+      const panel = document.querySelector(".right-panel");
+
+      if (window.innerWidth > 768) {
+        panel.addEventListener("mousemove", (e) => {
+          const r = card.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          
+          // Limit tilt angle
+          const rx = ((e.clientY - cy) / (r.height / 2)) * -6; // Max 6deg
+          const ry = ((e.clientX - cx) / (r.width / 2)) * 6;  // Max 6deg
+
+          card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+          card.style.transition = 'transform 0.1s ease';
+        });
+
+        panel.addEventListener("mouseleave", () => {
+          card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
+          card.style.transition = 'transform 0.5s ease';
+        });
+      }
+
+      // 3. Custom Toggle Switch (Remember Me)
+      const rememberSwitch = document.getElementById("rememberMe");
+      const rememberLabel = document.getElementById("rememberLabel");
+      let isRemembered = false;
+
+      const toggleRemember = () => {
+        isRemembered = !isRemembered;
+        if (isRemembered) {
+          rememberSwitch.classList.add("on");
+        } else {
+          rememberSwitch.classList.remove("on");
+        }
+      };
+
+      rememberSwitch.addEventListener("click", toggleRemember);
+      rememberLabel.addEventListener("click", toggleRemember);
+
+      // 4. Password Visibility Toggle
+      const passwordInput = document.getElementById("password");
+      const togglePasswordIcon = document.getElementById("togglePassword");
+
+      togglePasswordIcon.addEventListener("click", () => {
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          togglePasswordIcon.classList.remove("fa-lock");
+          togglePasswordIcon.classList.add("fa-eye-slash");
+        } else {
+          passwordInput.type = "password";
+          togglePasswordIcon.classList.remove("fa-eye-slash");
+          togglePasswordIcon.classList.add("fa-lock");
+        }
+      });
+
+      // 5. Validation and Submit Redirect Flow
+      const loginForm = document.getElementById("loginForm");
+      const emailInput = document.getElementById("email");
+      const btnSubmit = document.getElementById("btnSubmit");
+      const submitIcon = document.getElementById("submitIcon");
+      const emailError = document.getElementById("emailError");
+      const passwordError = document.getElementById("passwordError");
+
+      const validateEmail = (email) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+      };
+
+      loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        // Reset errors
+        emailInput.classList.remove("is-invalid", "shake-anim");
+        passwordInput.classList.remove("is-invalid", "shake-anim");
+        emailError.style.display = "none";
+        passwordError.style.display = "none";
+
+        let isValid = true;
+        const emailVal = emailInput.value.trim();
+        const passwordVal = passwordInput.value;
+
+        // Validation logic
+        if (!emailVal || !validateEmail(emailVal)) {
+          emailInput.classList.add("is-invalid", "shake-anim");
+          emailError.style.display = "block";
+          isValid = false;
+        }
+
+        if (!passwordVal) {
+          passwordInput.classList.add("is-invalid", "shake-anim");
+          passwordError.style.display = "block";
+          isValid = false;
+        }
+
+        // Trigger shake remove to allow repeating trigger
+        setTimeout(() => {
+          emailInput.classList.remove("shake-anim");
+          passwordInput.classList.remove("shake-anim");
+        }, 400);
+
+        if (isValid) {
+          // Change state to loading
+          btnSubmit.disabled = true;
+          const btnText = btnSubmit.querySelector("span");
+          btnText.textContent = "Signing in...";
+          submitIcon.className = "fa-solid fa-spinner fa-spin";
+          btnSubmit.style.opacity = "0.8";
+
+          // Simulate login processing time
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 800);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

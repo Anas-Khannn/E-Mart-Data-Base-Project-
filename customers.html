@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Mart — Customers (CRM)</title>
+  
+  <!-- Bootstrap 5.3.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Font Awesome 6.5.0 CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  
+  <!-- Google Fonts: Inter + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- DataTables Bootstrap 5 CSS CDN -->
+  <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary    : #0d1117;
+      --bg-secondary  : #161b22;
+      --bg-card       : #1c2128;
+      --bg-input      : #0d1117;
+      --bg-hover      : #21262d;
+      --green         : #238636;
+      --green-light   : #3fb950;
+      --green-bright  : #56d364;
+      --blue          : #58a6ff;
+      --blue-dark     : #1f6feb;
+      --purple        : #8957e5;
+      --amber         : #e3b341;
+      --red           : #f85149;
+      --text-primary  : #e6edf3;
+      --text-secondary: #8b949e;
+      --text-muted    : #484f58;
+      --border        : #30363d;
+      --border-green  : rgba(35, 134, 54, 0.4);
+      --gradient-btn  : linear-gradient(135deg, #238636, #196c2e);
+      --gradient-blue : linear-gradient(135deg, #1f6feb, #0d4a9e);
+      --glow-green    : 0 0 20px rgba(35, 134, 54, 0.4);
+      --glow-blue     : 0 0 16px rgba(88, 166, 255, 0.3);
+    }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #161b22;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #238636;
+      border-radius: 3px;
+    }
+
+    /* Layout Wrapper */
+    .dashboard-wrapper {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Left Sidebar */
+    .sidebar {
+      width: 250px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-brand {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .sidebar-brand i {
+      font-size: 24px;
+      color: var(--green-light);
+    }
+
+    .sidebar-brand span {
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-menu {
+      padding: 1.5rem 0;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      overflow-y: auto;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 1.5rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .menu-item:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .menu-item.active {
+      background: rgba(35, 134, 54, 0.08);
+      color: var(--text-primary);
+      border-left-color: var(--green-light);
+      font-weight: 600;
+    }
+
+    .menu-item i {
+      font-size: 16px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--red);
+      text-decoration: none;
+      font-weight: 500;
+      transition: opacity 0.2s;
+    }
+
+    .btn-logout:hover {
+      opacity: 0.8;
+      text-decoration: underline;
+    }
+
+    /* Main Content Area */
+    .content-area {
+      margin-left: 250px;
+      flex-grow: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Navbar */
+    .navbar {
+      height: 70px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 18px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .breadcrumbs {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .breadcrumbs a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .breadcrumbs span.current {
+      color: var(--green-light);
+      font-weight: 500;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 10px;
+      border-radius: 8px;
+    }
+
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--gradient-blue);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+      border: 1px solid var(--blue);
+    }
+
+    /* Main Container Content */
+    .dashboard-content {
+      padding: 2rem;
+      flex-grow: 1;
+    }
+
+    .page-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    /* Cards */
+    .card-emart {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 24px;
+    }
+
+    /* Banner KPI Grid */
+    .banner-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .banner-kpi-item {
+      background: rgba(22, 27, 34, 0.4);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .banner-kpi-icon {
+      font-size: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .banner-kpi-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+
+    .banner-kpi-lbl {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* Custom buttons */
+    .btn-emart-primary {
+      background: var(--gradient-btn);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 13.5px;
+      padding: 9px 18px;
+      cursor: pointer;
+      box-shadow: var(--glow-green);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-emart-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    /* DataTables Overrides for Dark Mode */
+    .dataTables_wrapper {
+      color: var(--text-primary) !important;
+    }
+
+    .dataTables_length label, .dataTables_filter label {
+      color: var(--text-secondary) !important;
+      font-size: 12.5px;
+      margin-bottom: 12px;
+    }
+
+    .dataTables_filter input, .dataTables_length select {
+      background: var(--bg-input) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 6px !important;
+      color: var(--text-primary) !important;
+      padding: 4px 10px !important;
+      outline: none;
+    }
+
+    .dataTables_filter input:focus, .dataTables_length select:focus {
+      border-color: var(--green) !important;
+    }
+
+    .table-emart-grid {
+      border-color: var(--border) !important;
+      font-size: 13px !important;
+      margin-top: 10px !important;
+      margin-bottom: 15px !important;
+    }
+
+    .table-emart-grid th {
+      background: var(--bg-secondary) !important;
+      color: var(--text-secondary) !important;
+      font-weight: 600 !important;
+      border-bottom: 2px solid var(--border) !important;
+      padding: 12px 10px !important;
+    }
+
+    .table-emart-grid td {
+      background: var(--bg-card) !important;
+      color: var(--text-primary) !important;
+      border-bottom: 1px solid var(--border) !important;
+      padding: 12px 10px !important;
+      vertical-align: middle !important;
+    }
+
+    .table-emart-grid tbody tr:hover td {
+      background: var(--bg-hover) !important;
+    }
+
+    .dataTables_info {
+      color: var(--text-secondary) !important;
+      font-size: 12px !important;
+    }
+
+    /* Pagination styled dark */
+    .pagination .page-link {
+      background-color: var(--bg-card) !important;
+      border-color: var(--border) !important;
+      color: var(--text-secondary) !important;
+      font-size: 12px;
+    }
+
+    .pagination .page-link:hover {
+      background-color: var(--bg-hover) !important;
+      color: var(--text-primary) !important;
+    }
+
+    .pagination .page-item.active .page-link {
+      background-color: var(--green) !important;
+      border-color: var(--green) !important;
+      color: white !important;
+      box-shadow: var(--glow-green) !important;
+    }
+
+    /* Badges */
+    .badge-emart {
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .badge-active   { background: rgba(86,211,100,0.15); color: #56d364; border: 1px solid rgba(86,211,100,0.3); }
+    .badge-inactive { background: rgba(248,81,73,0.12); color: #f85149; border: 1px solid rgba(248,81,73,0.3); }
+    .badge-regular  { background: rgba(88,166,255,0.12); color: #58a6ff; border: 1px solid rgba(88,166,255,0.3); }
+    .badge-gold     { background: rgba(137,87,229,0.15); color: #8957e5; border: 1px solid rgba(137,87,229,0.3); }
+    .badge-vip      { background: rgba(86,211,100,0.15); color: #56d364; border: 1px solid rgba(86,211,100,0.3); }
+
+    .id-col {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      color: var(--blue);
+    }
+
+    .points-col {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--amber);
+    }
+
+    .spent-col {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: var(--green-bright);
+    }
+
+    /* Action buttons in grid */
+    .btn-action {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-secondary);
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 12px;
+      margin-right: 4px;
+    }
+
+    .btn-action.edit:hover {
+      background: rgba(88, 166, 255, 0.1);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .btn-action.points:hover {
+      background: rgba(227, 179, 65, 0.1);
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .btn-action.audit:hover {
+      background: rgba(137, 87, 229, 0.1);
+      border-color: var(--purple);
+      color: var(--purple);
+    }
+
+    /* Modals */
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-primary);
+    }
+
+    .modal-header {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--red);
+    }
+
+    .modal-footer {
+      border-top: 1px solid var(--border);
+    }
+
+    /* Floating Labels Form */
+    .floating-group {
+      position: relative;
+      margin-bottom: 1.25rem;
+    }
+
+    .floating-input, .floating-select {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      font-size: 13.5px;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .floating-input:focus, .floating-select:focus {
+      border-color: var(--green);
+      box-shadow: var(--glow-green);
+      outline: none;
+    }
+
+    .floating-label {
+      position: absolute;
+      left: 14px;
+      top: 12px;
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      pointer-events: none;
+      transition: 0.2s all ease-in-out;
+    }
+
+    .floating-input:focus ~ .floating-label,
+    .floating-input:not(:placeholder-shown) ~ .floating-label,
+    .floating-select:focus ~ .floating-label,
+    .floating-select:not([value=""]):valid ~ .floating-label {
+      top: -9px;
+      font-size: 11px;
+      color: var(--green-light);
+      background: var(--bg-card);
+      padding: 0 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .floating-select.has-value ~ .floating-label {
+      top: -9px;
+      font-size: 11px;
+      color: var(--green-light);
+      background: var(--bg-card);
+      padding: 0 5px;
+      letter-spacing: 0.5px;
+    }
+
+    .error-feedback {
+      color: var(--red);
+      font-size: 11px;
+      margin-top: 3px;
+      display: none;
+    }
+
+    .btn-modal-save {
+      background: var(--gradient-btn);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 10px 22px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--glow-green);
+    }
+
+    .btn-modal-save:hover {
+      opacity: 0.9;
+    }
+
+    .btn-modal-close {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-primary);
+      padding: 10px 22px;
+    }
+
+    .btn-modal-close:hover {
+      background: var(--bg-hover);
+    }
+
+    /* Terminal timeline logs */
+    .terminal-logs {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 15px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    .log-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba(48, 54, 61, 0.5);
+    }
+
+    .log-item:last-child {
+      border-bottom: none;
+    }
+
+    .log-time {
+      color: var(--text-secondary);
+      width: 75px;
+    }
+
+    .log-desc {
+      color: var(--text-primary);
+      flex-grow: 1;
+      padding: 0 10px;
+    }
+
+    .log-val-plus { color: var(--green-bright); }
+    .log-val-minus { color: var(--red); }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .banner-kpis {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        left: -250px;
+      }
+      .sidebar.active {
+        left: 0;
+      }
+      .content-area {
+        margin-left: 0;
+      }
+      .sidebar-toggle {
+        display: block;
+      }
+      .banner-kpis {
+        grid-template-columns: 1fr;
+      }
+      .dashboard-content {
+        padding: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="dashboard-wrapper">
+    
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <a href="dashboard.html" class="sidebar-brand">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span>E-Mart</span>
+      </a>
+      
+      <div class="sidebar-menu">
+        <a href="dashboard.html" class="menu-item">
+          <i class="fa-solid fa-gauge-high"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="pos.html" class="menu-item">
+          <i class="fa-solid fa-cash-register"></i>
+          <span>POS Checkout</span>
+        </a>
+        <a href="products.html" class="menu-item">
+          <i class="fa-solid fa-boxes-stacked"></i>
+          <span>Products Inventory</span>
+        </a>
+        <a href="customers.html" class="menu-item active">
+          <i class="fa-solid fa-users"></i>
+          <span>Customers (CRM)</span>
+        </a>
+        <a href="reports.html" class="menu-item">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Visual Reports</span>
+        </a>
+        <a href="settings.html" class="menu-item">
+          <i class="fa-solid fa-gears"></i>
+          <span>Store Settings</span>
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="login.html" class="btn-logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+          <span>Log Out</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="content-area">
+      
+      <!-- TOP NAVBAR -->
+      <div class="navbar">
+        <div class="nav-left">
+          <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="breadcrumbs">
+            <a href="#">E-Mart</a> &nbsp;/&nbsp; <a href="#">Control Center</a> &nbsp;/&nbsp; <span class="current">Customers CRM</span>
+          </div>
+        </div>
+
+        <div class="nav-right">
+          <div class="user-profile">
+            <div class="user-avatar">AK</div>
+            <div class="user-info d-none d-sm-flex">
+              <span class="user-name">Anas Khan</span>
+              <span class="user-role">Administrator</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CONTAINER CONTENT -->
+      <div class="dashboard-content">
+        
+        <!-- HEADER ROW -->
+        <div class="page-header-row">
+          <h2 class="page-title"><i class="fa-solid fa-users text-success me-2"></i>Customers CRM Registry</h2>
+          <button class="btn-emart-primary" id="btnOpenAddModal">
+            <i class="fa-solid fa-user-plus"></i> Add New Customer
+          </button>
+        </div>
+
+        <!-- QUICK CRM BANNER KPIS -->
+        <div class="banner-kpis">
+          <div class="banner-kpi-item">
+            <div class="banner-kpi-icon bg-secondary text-amber"><i class="fa-solid fa-address-book"></i></div>
+            <div>
+              <div class="banner-kpi-val" id="kpiTotalCRM">10 profiles</div>
+              <div class="banner-kpi-lbl">Total Profiles</div>
+            </div>
+          </div>
+          <div class="banner-kpi-item">
+            <div class="banner-kpi-icon bg-secondary text-success"><i class="fa-solid fa-user-shield"></i></div>
+            <div>
+              <div class="banner-kpi-val" id="kpiActiveCRM">3 Gold / 3 VIP</div>
+              <div class="banner-kpi-lbl">Active Loyalty Members</div>
+            </div>
+          </div>
+          <div class="banner-kpi-item">
+            <div class="banner-kpi-icon bg-secondary text-purple"><i class="fa-solid fa-award"></i></div>
+            <div>
+              <div class="banner-kpi-val" id="kpiAvgPoints">409 pts</div>
+              <div class="banner-kpi-lbl">Avg. Loyalty Points</div>
+            </div>
+          </div>
+          <div class="banner-kpi-item">
+            <div class="banner-kpi-icon bg-secondary text-primary"><i class="fa-solid fa-coins"></i></div>
+            <div>
+              <div class="banner-kpi-val">4,090 pts</div>
+              <div class="banner-kpi-lbl">Reward Points Issued</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN TABLE GRID -->
+        <div class="card-emart">
+          <div class="table-responsive">
+            <table class="table table-emart-grid" id="customersTable" style="width:100%;">
+              <thead>
+                <tr>
+                  <th>Customer ID</th>
+                  <th>Customer Name</th>
+                  <th>Contact Phone</th>
+                  <th>Loyalty Tier</th>
+                  <th>Points Balance</th>
+                  <th>Lifetime Spent</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="customersTableBody">
+                <!-- Data injected dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ADD / EDIT CUSTOMER MODAL -->
+  <div class="modal fade" id="customerModal" tabindex="-1" aria-hidden="true" style="backdrop-filter: blur(8px);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">Register New Customer</h5>
+          <button type="button" class="modal-close-btn" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <form id="customerForm" novalidate>
+          <div class="modal-body">
+            <input type="hidden" id="editCustId" value="">
+
+            <!-- Generated Cust ID -->
+            <div class="floating-group">
+              <input type="text" class="floating-input" id="custCode" placeholder=" " readonly style="opacity:0.7;">
+              <label for="custCode" class="floating-label">Generated Customer ID</label>
+            </div>
+
+            <!-- Customer Name -->
+            <div class="floating-group">
+              <input type="text" class="floating-input" id="custName" placeholder=" " required>
+              <label for="custName" class="floating-label">Customer Full Name</label>
+              <div class="error-feedback" id="custNameError">Customer name is required</div>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="floating-group">
+              <input type="text" class="floating-input" id="custPhone" placeholder=" " required maxlength="12">
+              <label for="custPhone" class="floating-label">Contact Phone (03XX-XXXXXXX)</label>
+              <div class="error-feedback" id="custPhoneError">Valid phone number is required</div>
+            </div>
+
+            <!-- Loyalty Tier select -->
+            <div class="floating-group">
+              <select class="floating-select" id="custTier" required>
+                <option value="" disabled selected hidden></option>
+                <option value="Regular">Regular (Blue Badge)</option>
+                <option value="Gold">Gold (5% Discount Tier)</option>
+                <option value="VIP">VIP (10% Discount Tier)</option>
+              </select>
+              <label for="custTier" class="floating-label">Loyalty Membership Tier</label>
+              <div class="error-feedback" id="custTierError">Membership tier is required</div>
+            </div>
+
+          </div>
+          
+          <div class="modal-footer">
+            <button type="button" class="btn-modal-close" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn-modal-save" id="btnModalSave">Save Customer Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- REWARD / MANAGE POINTS MODAL -->
+  <div class="modal fade" id="pointsModal" tabindex="-1" aria-hidden="true" style="backdrop-filter: blur(8px);">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+      <div class="modal-content border border-warning">
+        <div class="modal-header">
+          <h5 class="modal-title text-warning"><i class="fa-solid fa-coins me-2"></i>Reward Loyalty Points</h5>
+          <button type="button" class="modal-close-btn" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        
+        <form id="pointsForm" novalidate>
+          <div class="modal-body">
+            <input type="hidden" id="pointsCustId" value="">
+            
+            <p class="text-secondary mb-3">Adjusting points register for <b id="pointsCustName" class="text-white"></b></p>
+            
+            <div class="row mb-3">
+              <div class="col-6">
+                <span class="text-secondary" style="font-size:11px;">Current Balance:</span>
+                <h4 class="points-col" id="pointsCurrent">0 pts</h4>
+              </div>
+              <div class="col-6 text-end">
+                <span class="text-secondary" style="font-size:11px;">New Est. Balance:</span>
+                <h4 class="text-success font-monospace" id="pointsFuture" style="font-weight:700;">0 pts</h4>
+              </div>
+            </div>
+
+            <!-- Points Adjustment value -->
+            <div class="floating-group">
+              <input type="number" class="floating-input" id="pointsVal" placeholder=" " required>
+              <label for="pointsVal" class="floating-label">Points to Add (use minus - to deduct)</label>
+              <div class="error-feedback" id="pointsValError">Valid integer adjustment is required</div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-modal-close" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn-modal-save" id="btnPointsSave" style="background: linear-gradient(135deg, #e3b341, #ab8121); box-shadow: 0 0 16px rgba(227,179,65,0.3); color: black;">Apply Points</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUDIT LOGS MODAL -->
+  <div class="modal fade" id="auditModal" tabindex="-1" aria-hidden="true" style="backdrop-filter: blur(8px);">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fa-solid fa-clock-rotate-left text-primary me-2"></i>Points Transaction Timeline Audit</h5>
+          <button type="button" class="modal-close-btn" data-bs-dismiss="modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-secondary mb-3">Chronological points audit log details for: <b id="auditCustName" class="text-white"></b></p>
+          
+          <div class="terminal-logs" id="auditLogsContainer">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-modal-close" data-bs-dismiss="modal">Dismiss Logs</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery 3.7.1 CDN -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- DataTables jQuery JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/datatables.net@1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      
+      // 1. Sidebar Toggling on mobile sizes
+      const sidebar = document.getElementById("sidebar");
+      const toggleBtn = document.getElementById("sidebarToggle");
+
+      toggleBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("active");
+      });
+
+      // Close sidebar if clicking outside on mobile
+      document.addEventListener("click", (e) => {
+        if (window.innerWidth <= 768) {
+          if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target) && sidebar.classList.contains("active")) {
+            sidebar.classList.remove("active");
+          }
+        }
+      });
+
+      // 2. Custom Styled dropdown change floating label triggers
+      const custTierSelect = document.getElementById("custTier");
+      custTierSelect.addEventListener("change", () => {
+        if (custTierSelect.value) {
+          custTierSelect.classList.add("has-value");
+        } else {
+          custTierSelect.classList.remove("has-value");
+        }
+      });
+
+      // Phone Input Formatter (03XX-XXXXXXX)
+      const phoneInput = document.getElementById("custPhone");
+      phoneInput.addEventListener("input", (e) => {
+        let val = phoneInput.value.replace(/\D/g, ""); // strip non-digits
+        if (val.length > 4) {
+          phoneInput.value = val.slice(0, 4) + "-" + val.slice(4, 11);
+        } else {
+          phoneInput.value = val;
+        }
+      });
+
+      // 3. CRM Customers Dataset
+      let customersList = [
+        { id: "CRM-001", name: "Aisha Malik", phone: "0321-4567890", tier: "VIP", points: 650, spent: 45200, active: true },
+        { id: "CRM-002", name: "Bilal Riaz", phone: "0333-8765432", tier: "Gold", points: 380, spent: 28400, active: true },
+        { id: "CRM-003", name: "Samina Begum", phone: "0300-1234567", tier: "Regular", points: 120, spent: 12500, active: true },
+        { id: "CRM-004", name: "Ali Raza", phone: "0345-9876543", tier: "Gold", points: 420, spent: 31800, active: true },
+        { id: "CRM-005", name: "Zainab Bibi", phone: "0312-5554433", tier: "VIP", points: 890, spent: 62400, active: true },
+        { id: "CRM-006", name: "Muhammad Usman", phone: "0322-1112233", tier: "Regular", points: 80, spent: 8200, active: true },
+        { id: "CRM-007", name: "Fatima Sana", phone: "0334-4445556", tier: "Gold", points: 290, spent: 22100, active: true },
+        { id: "CRM-008", name: "Hamza Yusuf", phone: "0301-9998887", tier: "Regular", points: 50, spent: 4500, active: true },
+        { id: "CRM-009", name: "Sarah Ahmad", phone: "0315-7776665", tier: "VIP", points: 750, spent: 51900, active: true },
+        { id: "CRM-010", name: "Tariq Mahmood", phone: "0347-3332211", tier: "Regular", points: 460, spent: 14800, active: true }
+      ];
+
+      // Simulated timeline point transactions
+      let transactionLogs = {
+        "CRM-001": [
+          { time: "May 18", desc: "Awarded POS checkout invoice points (#INV-8201)", val: 65, isAdd: true },
+          { time: "May 10", desc: "Redeemed points cash balance discount checkout", val: 150, isAdd: false },
+          { time: "May 02", desc: "Awarded promotional loyalty points bonus", val: 100, isAdd: true }
+        ],
+        "CRM-002": [
+          { time: "May 15", desc: "Awarded POS checkout invoice points (#INV-8152)", val: 38, isAdd: true },
+          { time: "May 08", desc: "Awarded promotional gold level signup bonus", val: 200, isAdd: true }
+        ]
+      };
+
+      // 4. Customers Table Renderer
+      let table;
+
+      const renderTable = () => {
+        const tableBody = document.getElementById("customersTableBody");
+        tableBody.innerHTML = "";
+
+        customersList.forEach(c => {
+          const row = document.createElement("tr");
+          row.setAttribute("data-row-id", c.id);
+          row.innerHTML = `
+            <td class="id-col">${c.id}</td>
+            <td><b>${c.name}</b></td>
+            <td class="font-monospace text-secondary">${c.phone}</td>
+            <td><span class="badge-emart ${getTierBadge(c.tier)}">${c.tier}</span></td>
+            <td class="points-col">${c.points} pts</td>
+            <td class="spent-col">Rs. ${c.spent.toLocaleString()}</td>
+            <td><span class="badge-emart badge-active">Active</span></td>
+            <td>
+              <button class="btn-action edit" onclick="triggerEditCustomer('${c.id}')" title="Edit Profile"><i class="fa-solid fa-user-pen"></i></button>
+              <button class="btn-action points" onclick="triggerRewardPoints('${c.id}')" title="Reward Points"><i class="fa-solid fa-coins"></i></button>
+              <button class="btn-action audit" onclick="triggerAuditLogs('${c.id}')" title="Points History Log"><i class="fa-solid fa-clock-rotate-left"></i></button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+
+        // KPI aggregates calculations
+        document.getElementById("kpiTotalCRM").textContent = `${customersList.length} profiles`;
+        const goldCount = customersList.filter(c => c.tier === "Gold").length;
+        const vipCount = customersList.filter(c => c.tier === "VIP").length;
+        document.getElementById("kpiActiveCRM").textContent = `${goldCount} Gold / ${vipCount} VIP`;
+        
+        let sumPoints = 0;
+        customersList.forEach(c => sumPoints += c.points);
+        const avgPts = Math.round(sumPoints / customersList.length);
+        document.getElementById("kpiAvgPoints").textContent = `${avgPts} pts`;
+
+        // Destroy and Re-initialize styled DataTables
+        if ($.fn.DataTable.isDataTable('#customersTable')) {
+          table.destroy();
+        }
+
+        table = $('#customersTable').DataTable({
+          "pageLength": 10,
+          "lengthMenu": [5, 10, 25, 50],
+          "ordering": true,
+          "dom": '<"d-flex justify-content-between align-items-center"l>t<"d-flex justify-content-between align-items-center mt-3"ip>',
+          "language": {
+            "search": "",
+            "searchPlaceholder": "Search customer records..."
+          }
+        });
+      };
+
+      const getTierBadge = (tier) => {
+        if (tier === "VIP") return "badge-vip";
+        if (tier === "Gold") return "badge-gold";
+        return "badge-regular";
+      };
+
+      renderTable();
+
+      // 5. CRM MODALS TRIGGERS
+      const customerModal = new bootstrap.Modal(document.getElementById("customerModal"));
+      const customerForm = document.getElementById("customerForm");
+
+      // Open ADD Customer Modal
+      document.getElementById("btnOpenAddModal").addEventListener("click", () => {
+        document.getElementById("modalTitle").textContent = "Register New Customer";
+        document.getElementById("editCustId").value = "";
+        
+        const newId = "CRM-" + String(customersList.length + 1).padStart(3, '0');
+        document.getElementById("custCode").value = newId;
+        
+        document.getElementById("custName").value = "";
+        phoneInput.value = "";
+        custTierSelect.value = "";
+        custTierSelect.classList.remove("has-value");
+
+        // Clear errors
+        ["custName", "custPhone", "custTier"].forEach(fid => {
+          document.getElementById(fid).classList.remove("is-invalid");
+          document.getElementById(fid + "Error").style.display = "none";
+        });
+
+        customerModal.show();
+      });
+
+      // Trigger EDIT Customer
+      window.triggerEditCustomer = (id) => {
+        const cust = customersList.find(c => c.id === id);
+        if (!cust) return;
+
+        document.getElementById("modalTitle").textContent = "Edit Customer Profile";
+        document.getElementById("editCustId").value = cust.id;
+        document.getElementById("custCode").value = cust.id;
+        
+        document.getElementById("custName").value = cust.name;
+        phoneInput.value = cust.phone;
+        
+        custTierSelect.value = cust.tier;
+        custTierSelect.classList.add("has-value");
+
+        // Clear errors
+        ["custName", "custPhone", "custTier"].forEach(fid => {
+          document.getElementById(fid).classList.remove("is-invalid");
+          document.getElementById(fid + "Error").style.display = "none";
+        });
+
+        customerModal.show();
+      };
+
+      // Form Save Profile
+      customerForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        let isFormValid = true;
+        const formFields = ["custName", "custPhone", "custTier"];
+
+        formFields.forEach(fid => {
+          document.getElementById(fid).classList.remove("is-invalid");
+          document.getElementById(fid + "Error").style.display = "none";
+        });
+
+        const nameVal = document.getElementById("custName").value.trim();
+        if (!nameVal) {
+          document.getElementById("custName").classList.add("is-invalid");
+          document.getElementById("custNameError").style.display = "block";
+          isFormValid = false;
+        }
+
+        const phoneVal = phoneInput.value.trim();
+        const phoneRegex = /^03\d{2}-\d{7}$/;
+        if (!phoneRegex.test(phoneVal)) {
+          document.getElementById("custPhone").classList.add("is-invalid");
+          document.getElementById("custPhoneError").style.display = "block";
+          isFormValid = false;
+        }
+
+        const tierVal = custTierSelect.value;
+        if (!tierVal) {
+          document.getElementById("custTier").classList.add("is-invalid");
+          document.getElementById("custTierError").style.display = "block";
+          isFormValid = false;
+        }
+
+        if (!isFormValid) return;
+
+        const btnSave = document.getElementById("btnModalSave");
+        btnSave.textContent = "Saving...";
+        btnSave.disabled = true;
+
+        setTimeout(() => {
+          const editId = document.getElementById("editCustId").value;
+          
+          if (editId) {
+            // Edit profile
+            const index = customersList.findIndex(c => c.id === editId);
+            if (index !== -1) {
+              customersList[index].name = nameVal;
+              customersList[index].phone = phoneVal;
+              customersList[index].tier = tierVal;
+            }
+          } else {
+            // Add new profile
+            const newId = document.getElementById("custCode").value;
+            customersList.push({
+              id: newId,
+              name: nameVal,
+              phone: phoneVal,
+              tier: tierVal,
+              points: 100, // Initial sign-on points
+              spent: 0,
+              active: true
+            });
+            
+            // Add initial transaction log
+            transactionLogs[newId] = [
+              { time: "May 19", desc: "Initial customer sign-on reward bonus points", val: 100, isAdd: true }
+            ];
+          }
+
+          renderTable();
+          customerModal.hide();
+
+          btnSave.textContent = "Save Customer Profile";
+          btnSave.disabled = false;
+        }, 500);
+      });
+
+      // 6. POINTS MODAL LOGIC
+      const pointsModal = new bootstrap.Modal(document.getElementById("pointsModal"));
+      const pointsForm = document.getElementById("pointsForm");
+      const pointsInput = document.getElementById("pointsVal");
+      const pointsCurrentSpan = document.getElementById("pointsCurrent");
+      const pointsFutureSpan = document.getElementById("pointsFuture");
+
+      let activePointsCustId = "";
+      let currentPointsBalance = 0;
+
+      window.triggerRewardPoints = (id) => {
+        const cust = customersList.find(c => c.id === id);
+        if (!cust) return;
+
+        activePointsCustId = id;
+        currentPointsBalance = cust.points;
+
+        document.getElementById("pointsCustId").value = id;
+        document.getElementById("pointsCustName").textContent = `${cust.name} (${cust.id})`;
+        pointsCurrentSpan.textContent = `${cust.points} pts`;
+        pointsFutureSpan.textContent = `${cust.points} pts`;
+        pointsInput.value = "";
+
+        document.getElementById("pointsVal").classList.remove("is-invalid");
+        document.getElementById("pointsValError").style.display = "none";
+
+        pointsModal.show();
+      };
+
+      // Live estimate points calculations
+      pointsInput.addEventListener("input", () => {
+        const adjustVal = parseInt(pointsInput.value) || 0;
+        const newTotal = currentPointsBalance + adjustVal;
+        
+        pointsFutureSpan.textContent = `${newTotal} pts`;
+        if (newTotal < 0) {
+          pointsFutureSpan.className = "text-danger font-monospace";
+        } else {
+          pointsFutureSpan.className = "text-success font-monospace";
+        }
+      });
+
+      pointsForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const adjustVal = parseInt(pointsInput.value);
+        if (isNaN(adjustVal) || adjustVal === 0) {
+          document.getElementById("pointsVal").classList.add("is-invalid");
+          document.getElementById("pointsValError").style.display = "block";
+          return;
+        }
+
+        const estFuture = currentPointsBalance + adjustVal;
+        if (estFuture < 0) {
+          document.getElementById("pointsVal").classList.add("is-invalid");
+          document.getElementById("pointsValError").textContent = "Points cannot fall below 0";
+          document.getElementById("pointsValError").style.display = "block";
+          return;
+        }
+
+        const btnPoints = document.getElementById("btnPointsSave");
+        btnPoints.textContent = "Applying...";
+        btnPoints.disabled = true;
+
+        setTimeout(() => {
+          const index = customersList.findIndex(c => c.id === activePointsCustId);
+          if (index !== -1) {
+            customersList[index].points = estFuture;
+            
+            // Log points transaction
+            if (!transactionLogs[activePointsCustId]) {
+              transactionLogs[activePointsCustId] = [];
+            }
+            transactionLogs[activePointsCustId].unshift({
+              time: "May 19",
+              desc: adjustVal > 0 ? "Operator manual points adjustment reward" : "Redeemed points balance manual adjustment",
+              val: Math.abs(adjustVal),
+              isAdd: adjustVal > 0
+            });
+          }
+
+          renderTable();
+          pointsModal.hide();
+
+          btnPoints.textContent = "Apply Points";
+          btnPoints.disabled = false;
+          activePointsCustId = "";
+        }, 550);
+      });
+
+      // 7. AUDIT LOGS DISPLAY
+      const auditModal = new bootstrap.Modal(document.getElementById("auditModal"));
+      
+      window.triggerAuditLogs = (id) => {
+        const cust = customersList.find(c => c.id === id);
+        if (!cust) return;
+
+        document.getElementById("auditCustName").textContent = `${cust.name} (${cust.id})`;
+        const container = document.getElementById("auditLogsContainer");
+        container.innerHTML = "";
+
+        const logs = transactionLogs[id] || [];
+        
+        if (logs.length === 0) {
+          // Standard default log entries
+          const entries = [
+            { time: "May 17", desc: "Awarded invoice register checkout points", val: 45, isAdd: true },
+            { time: "May 09", desc: "Awarded loyalty membership signup bonus points", val: 100, isAdd: true }
+          ];
+          
+          entries.forEach(l => {
+            container.appendChild(createLogEl(l));
+          });
+        } else {
+          logs.forEach(l => {
+            container.appendChild(createLogEl(l));
+          });
+        }
+
+        auditModal.show();
+      };
+
+      const createLogEl = (l) => {
+        const row = document.createElement("div");
+        row.className = "log-item";
+        row.innerHTML = `
+          <span class="log-time">${l.time}</span>
+          <span class="log-desc">${l.desc}</span>
+          <span class="${l.isAdd ? 'log-val-plus' : 'log-val-minus'}">${l.isAdd ? '+' : '-'}${l.val} pts</span>
+        `;
+        return row;
+      };
+
+    });
+  </script>
+</body>
+</html>
